@@ -403,7 +403,7 @@ function tickWander(character: WanderCharacter) {
 
 async function ensureAudioPlaying() {
   const audio = audioRef.value;
-  if (!audio || !audio.paused) return;
+  if (!audio || !audio.getAttribute("src") || !audio.paused) return;
   await audio.play().catch(() => {});
 }
 

@@ -59,7 +59,7 @@ events:
     emotion: 崩坏
 
   - type: background
-    imagePath: '白天-崩坏1.webp'
+    imagePath: '白天-裂隙.png'
     transition: 0
 
   - type: background_effect

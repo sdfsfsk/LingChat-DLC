@@ -213,6 +213,7 @@ pub fn event(event_type: &str, ctx: &mut ExtensionEventContext<'_, '_>) {
             }
         }
         "poem_game" => {
+            vars_written.extend(["poem_glitch", "poem_warm_score", "poem_script_score", "poem_void_score"].map(str::to_owned));
             if let Some(variable) = obj.get("resultVar").and_then(|v| v.as_str()) {
                 if !variable.trim().is_empty() {
                     vars_written.insert(variable.trim().to_string());

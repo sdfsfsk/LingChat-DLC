@@ -1,7 +1,7 @@
 id = "seventh-test-script"
 name = "第七个测试剧本"
 description = "四幕 45 章恐怖剧本：多周目、写诗游戏、原生窗口与 .chr 文件互动。含突脸和闪烁演出。"
-version = "2.14.0"
+version = "2.15.0"
 author = "sdfsfsk"
 story_api_version = 1
 resources = ["scripts"]

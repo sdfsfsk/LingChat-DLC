@@ -17,7 +17,7 @@ events:
     displayName: RUNTIME
     text: |
       > loading required role: ql
-      > characters/standalone/第七个测试剧本/ql.chr ........ NOT FOUND
+      > characters/plugins/seventh-test-script/seventh-test-script/ql.chr ........ NOT FOUND
       > refusing to render dialogue for a missing record
 
   - type: narration

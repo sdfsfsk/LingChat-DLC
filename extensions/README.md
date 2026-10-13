@@ -35,4 +35,26 @@ and the UI dependency at `extensions/frontend`. Run the host's `pnpm build`,
 Windows test binaries require the application's common-controls v6 manifest.
 Published host manifests must use pinned remote dependencies, never local paths.
 
+## Story regression checks
+
+The host must register `createStoryEventProcessors()` from `@lingchat/dlc-ui/core/events`:
+its local `import.meta.glob` cannot discover processors inside this package.
+
+Build the `audit_story` and `story_routes` examples from the matching host workspace
+(`cargo build --release -p ling-chat-dlc-runtime --examples`). Run `audit_story
+HOST_DATA_DIR SCRIPT_DIR` for media/schema/factory validation and `story_routes
+SCRIPT_DIR` for all 45 chapters, both endings, poem routes, early marker deletion,
+checkpoint replay and legacy entries. The route audit uses the host condition and
+assignment functions; presentation and external effects are simulated there.
+
+`frontend/tests/story-smoke.mjs` renders the actual LC chat components and registers
+actual Tauri event listeners with mocked IPC. Set `LINGCHAT_HOST` to the host checkout;
+provide Playwright through `PLAYWRIGHT_MODULE` or the host's node_modules, and optionally
+`BROWSER_PATH` and `AUDIT_OUTPUT`. It checks Enter advancement, two portraits, forced
+choice, 20-word submissions in three poem modes, native-window tickets, timed effects
+and interruption cleanup. It does not claim to test native OS windows. Windows smoke
+validation additionally exercised the real executable, DLC portrait paths, forced
+choice, a complete poem, live checkpoint writes and stop cleanup in an independent
+data directory without player credentials.
+
 All moved host code retains its AGPL-3.0 license (see repository LICENSE).

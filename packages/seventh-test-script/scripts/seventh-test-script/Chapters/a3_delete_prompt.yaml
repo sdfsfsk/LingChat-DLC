@@ -44,7 +44,7 @@ events:
   - type: narration
     displayName: RUNTIME
     text: |
-      > opening marker folder: characters/standalone/第七个测试剧本/
+      > opening marker folder: characters/plugins/seventh-test-script/seventh-test-script/
       > SAFE TARGET: MAIN.chr
       > DO NOT DELETE: ql.chr / this folder / data/game_data/characters/DeepSeek
       > no executable code is stored in either marker

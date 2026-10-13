@@ -371,6 +371,7 @@ mod tests {
     }
     #[test]
     fn catalog_content_kind_must_match_manifest() {
+        crate::install_for_tests();
         let dir = tempfile::tempdir().unwrap();
         std::fs::create_dir_all(dir.path().join("scripts/example")).unwrap();
         std::fs::write(

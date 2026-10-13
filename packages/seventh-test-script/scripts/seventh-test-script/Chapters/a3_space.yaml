@@ -37,7 +37,7 @@ events:
 
   # 空间教室：崩坏教室 + 血管侵蚀常驻 + 心跳
   - type: background
-    imagePath: '无星教室.webp'
+    imagePath: '无星教室-异境.png'
     transition: 4.0
 
   - type: background_effect

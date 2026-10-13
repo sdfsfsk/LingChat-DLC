@@ -1,6 +1,6 @@
 {
   "name": "@lingchat/dlc-ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "src"
   ],
   "exports": {
+    "./core/events": "./src/core/events/index.ts",
     "./api/services/games": "./src/api/services/games.ts",
     "./assets/images/LingChatLogoGlitch.png": "./src/assets/images/LingChatLogoGlitch.png",
     "./components/game/standard/HorrorEffectsLayer.vue": "./src/components/game/standard/HorrorEffectsLayer.vue",

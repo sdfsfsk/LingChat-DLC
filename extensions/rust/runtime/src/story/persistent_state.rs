@@ -211,9 +211,12 @@ pub fn save_playthrough(script: &ScriptStatus, data_dir: &Path) -> Result<()> {
 
     let mut state = read_state(data_dir)?;
     state.version = STATE_VERSION;
-    state
-        .scripts
-        .insert(script.path_key(), selected_values(script, &keys));
+    let owner = script.path_key();
+    let values = selected_values(script, &keys);
+    if state.scripts.get(&owner) == Some(&values) {
+        return Ok(());
+    }
+    state.scripts.insert(owner, values);
     write_state(data_dir, &state)
 }
 
@@ -253,4 +256,47 @@ pub(crate) fn restore_playthrough(
 /// the first-run route again. Returns true when anything was removed.
 pub fn reset_playthrough(data_dir: &Path, path_key: &str) -> Result<bool> {
     Ok(take_playthrough(data_dir, path_key)?.is_some())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ling_chat_main::ai_service::game_system::script_engine::ScriptManager;
+
+    fn story(data: &Path) -> ScriptStatus {
+        let dir = data.join("plugins/story/scripts/example");
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("story_config.yaml"), "script_name: Example\nintro_chapter: start\nscript_settings:\n  persistent_vars: [playthrough, current_act, marker_checkpoint]\n").unwrap();
+        let mut script = ScriptManager::read_script_config(&dir).unwrap();
+        script.plugin_id = Some("story".into());
+        script
+    }
+
+    #[test]
+    fn checkpoint_survives_reentry_without_promoting_act_by_open_count() {
+        let data = tempfile::tempdir().unwrap();
+        let initial = story(data.path());
+        let mut running = prepare_playthrough(&initial, data.path());
+        running.set_variable("current_act", Value::from(1));
+        running.set_variable("marker_checkpoint", Value::from("act1_to_act2"));
+        running.set_variable("temporary_dialogue", Value::from("must not persist"));
+        save_playthrough(&running, data.path()).unwrap();
+        let reopened = prepare_playthrough(&initial, data.path());
+        assert_eq!(reopened.vars["playthrough"], 2);
+        assert_eq!(reopened.vars["current_act"], 1);
+        assert_eq!(reopened.vars["marker_checkpoint"], "act1_to_act2");
+        assert!(!reopened.vars.contains_key("temporary_dialogue"));
+    }
+
+    #[test]
+    fn unchanged_state_and_preview_do_not_rewrite_saved_progress() {
+        let data = tempfile::tempdir().unwrap();
+        let initial = story(data.path());
+        let running = prepare_playthrough(&initial, data.path());
+        let before = fs::read(state_path(data.path())).unwrap();
+        save_playthrough(&running, data.path()).unwrap();
+        let preview = prepare_preview(&initial);
+        assert_eq!(preview.vars["playthrough"], 1);
+        assert_eq!(before, fs::read(state_path(data.path())).unwrap());
+    }
 }
