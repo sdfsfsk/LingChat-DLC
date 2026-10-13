@@ -3,14 +3,15 @@
 //! 与 `choices` 共用同一条 oneshot 通道和选项匹配逻辑，区别只在 payload
 //! 多带一个 `forced` 字段：前端演出结束后只能提交这个选项的文本。
 
+use crate::story::channels::ForceChoiceGuard;
+use crate::story::channels::NativeChannels;
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use serde_json::Value;
 
 use crate::story::responses::{event_names::SCRIPT_FORCE_CHOICE, ChoiceItem, ForceChoicePayload};
 use ling_chat_main::ai_service::game_system::script_engine::events::{
-    evaluate_condition, parse_duration, register_event, ForceChoiceGuard, ScriptContext,
-    ScriptEvent,
+    evaluate_condition, parse_duration, register_event, ScriptContext, ScriptEvent,
 };
 use ling_chat_main::ai_service::game_system::script_engine::utils::script_function;
 use ling_chat_main::ai_service::message_system::events::emit;
@@ -103,7 +104,7 @@ impl ScriptEvent for ForceChoiceEvent {
             let mut ch = ctx.channels.lock().await;
             ch.choice_tx = Some(tx);
             ch.choice_allow_free = false;
-            ch.force_choice_guard = Some(ForceChoiceGuard {
+            ch.extension_mut::<NativeChannels>().force_choice_guard = Some(ForceChoiceGuard {
                 request_id: request_id.clone(),
                 forced: forced.clone(),
                 warp_enabled: cursor_warp_allowed,
@@ -121,7 +122,9 @@ impl ScriptEvent for ForceChoiceEvent {
         if let Err(error) = emit(ctx.app, SCRIPT_FORCE_CHOICE, &payload) {
             let mut channels = ctx.channels.lock().await;
             channels.choice_tx = None;
-            channels.force_choice_guard = None;
+            channels
+                .extension_mut::<NativeChannels>()
+                .force_choice_guard = None;
             return Err(anyhow!("发送 force_choice 事件失败: {error}"));
         }
 
@@ -130,11 +133,14 @@ impl ScriptEvent for ForceChoiceEvent {
             let mut channels = ctx.channels.lock().await;
             channels.choice_allow_free = false;
             if channels
+                .extension_mut::<NativeChannels>()
                 .force_choice_guard
                 .as_ref()
                 .is_some_and(|guard| guard.request_id == request_id)
             {
-                channels.force_choice_guard = None;
+                channels
+                    .extension_mut::<NativeChannels>()
+                    .force_choice_guard = None;
             }
         }
         let user_choice = choice_result.map_err(|_| anyhow!("用户选择通道已关闭"))?;

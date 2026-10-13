@@ -5,6 +5,8 @@
 //! word on later playthroughs. This implementation keeps that interaction model
 //! while using script-owned words, art, music, and story variables.
 
+use crate::story::channels::NativeChannels;
+use crate::story::channels::PoemSubmissionChannel;
 use std::fs;
 use std::path::Path;
 
@@ -18,7 +20,7 @@ use uuid::Uuid;
 
 use crate::story::responses::{event_names::SCRIPT_POEM_GAME, PoemGamePayload, PoemWordPayload};
 use ling_chat_main::ai_service::game_system::script_engine::events::{
-    register_event, PoemSubmissionChannel, ScriptContext, ScriptEvent,
+    register_event, ScriptContext, ScriptEvent,
 };
 use ling_chat_main::ai_service::game_system::script_engine::utils::media::{
     resolve_script_media, MediaType,
@@ -291,7 +293,8 @@ impl ScriptEvent for PoemGameEvent {
         let rx = {
             let (tx, rx) = tokio::sync::oneshot::channel();
             let mut channels = ctx.channels.lock().await;
-            channels.poem_tx = Some(PoemSubmissionChannel { request_id, tx });
+            channels.extension_mut::<NativeChannels>().poem_tx =
+                Some(PoemSubmissionChannel { request_id, tx });
             rx
         };
 

@@ -10,6 +10,7 @@
 //! `character_file`.
 
 use super::character_file_event;
+use crate::story::channels::NativeChannels;
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use serde_json::Value;
@@ -86,9 +87,11 @@ impl ScriptEvent for WatchFileEvent {
             channels.watch_jump = Some(self.on_missing.clone());
             channels.input_tx = None;
             channels.choice_tx = None;
-            channels.poem_tx = None;
+            channels.extension_mut::<NativeChannels>().poem_tx = None;
             channels.choice_allow_free = false;
-            channels.force_choice_guard = None;
+            channels
+                .extension_mut::<NativeChannels>()
+                .force_choice_guard = None;
             return Ok(None);
         }
 
@@ -115,7 +118,9 @@ impl ScriptEvent for WatchFileEvent {
                     channels.input_tx = None;
                     channels.choice_tx = None;
                     channels.choice_allow_free = false;
-                    channels.force_choice_guard = None;
+                    channels
+                        .extension_mut::<NativeChannels>()
+                        .force_choice_guard = None;
                 }
                 break;
             }

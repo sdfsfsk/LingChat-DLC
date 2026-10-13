@@ -1,11 +1,14 @@
 {
   "name": "@lingchat/dlc-ui",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",
   "files": [
-    "src"
+    "src",
+    "public",
+    "build.mjs",
+    "build.d.mts"
   ],
   "exports": {
     "./core/events": "./src/core/events/index.ts",
@@ -46,7 +49,21 @@
     "./styles/menu-effects.css": "./src/styles/menu-effects.css",
     "./stores/storyUI": "./src/stores/storyUI.ts",
     "./types/story": "./src/types/story.ts",
-    "./composables/useStoryEntry": "./src/composables/useStoryEntry.ts"
+    "./composables/useStoryEntry": "./src/composables/useStoryEntry.ts",
+    "./host/listeners": "./src/host/listeners.ts",
+    "./host/lifecycle": "./src/host/lifecycle.ts",
+    "./host/RoleOverlay.vue": "./src/host/RoleOverlay.vue",
+    "./build": "./build.mjs",
+    "./host/menu": "./src/host/menu.ts",
+    "./host/routes": "./src/host/routes.ts",
+    "./host/effects": "./src/host/effects.js",
+    "./host/MenuOverlay.vue": "./src/host/MenuOverlay.vue",
+    "./locales": "./src/locales/index.ts",
+    "./host/finish": "./src/host/finish.ts",
+    "./host/gameState": "./src/host/gameState.ts",
+    "./host/policy": "./src/host/policy.ts",
+    "./host/GameOverlay.vue": "./src/host/GameOverlay.vue",
+    "./host/character": "./src/host/character.ts"
   },
   "peerDependencies": {
     "vue": "^3.5.0",

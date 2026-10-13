@@ -1,13 +1,13 @@
 [package]
 name = "ling-chat-dlc-runtime"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 license = "AGPL-3.0-only"
 description = "LingChat game sessions and native story extension"
 [dependencies]
 ling-chat-main = ">=0.5.2, <0.6"
 ling-chat-plugins = ">=0.5.2, <0.6"
-ling-chat-dlc-contract = { path = "../contract", version = "0.1.2" }
+ling-chat-dlc-contract = { path = "../contract", version = "0.2.0" }
 async-trait = { workspace = true }
 sea-orm = { workspace = true }
 axum = { workspace = true }

@@ -1,6 +1,8 @@
+pub mod channels;
 pub mod commands;
 pub mod events;
 pub(crate) mod fs_sync;
+pub mod lifecycle;
 pub mod persistent_state;
 pub(crate) mod reset_transaction;
 pub mod responses;
@@ -10,6 +12,9 @@ pub mod validate;
 pub fn install() {
     use ling_chat_main::ai_service::game_system::script_engine::extension::{self, Hooks};
     extension::install(Hooks {
+        validate_choice: channels::validate_choice,
+        check_config: lifecycle::check_config,
+        initialize: |script, ctx| Box::pin(lifecycle::initialize(script, ctx)),
         restore_title: events::window_title_event::restore_window_title,
         schemas: schema::events,
         validate_config: validate::config,

@@ -71,17 +71,7 @@ export function useStoryEntry(emit: (event: "script-state-reset") => void) {
       return;
     }
 
-    // 带内容警告的剧本（如恐怖向）先弹确认，取消则不进入
-    if (script.content_warning === "horror") {
-      const confirmed = await dialogStore.confirm(
-        i18n.global.t("views.contentWarning.horrorMessage"),
-        i18n.global.t("views.contentWarning.horrorTitle"),
-      );
-      if (!confirmed) return;
-
-      // 确认后先"卡死 → 花屏"再进入（恐怖演出的一部分）
-      await uiStore.beginHorrorEntry();
-    }
+    if (!(await confirmStoryEntry(script))) return;
 
     // 新剧本必须使用全新的队列代号，取消任何上轮尚未返回的点击/视觉计时。
     eventQueue.clear();
@@ -104,4 +94,24 @@ export function useStoryEntry(emit: (event: "script-state-reset") => void) {
 
   onBeforeUnmount(() => clearTimeout(resetDoneTimer));
   return { resettingName, resetDoneName, resetMemory, selectScript };
+}
+
+export async function confirmStoryEntry(
+  script: ScriptSummary,
+): Promise<boolean> {
+  const dialogStore = useDialogStore(),
+    uiStore = useUIStore();
+  // 带内容警告的剧本（如恐怖向）先弹确认，取消则不进入
+  if (script.content_warning === "horror") {
+    const confirmed = await dialogStore.confirm(
+      i18n.global.t("views.contentWarning.horrorMessage"),
+      i18n.global.t("views.contentWarning.horrorTitle"),
+    );
+    if (!confirmed) return false;
+
+    // 确认后先"卡死 → 花屏"再进入（恐怖演出的一部分）
+    await uiStore.beginHorrorEntry();
+  }
+
+  return true;
 }

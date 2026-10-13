@@ -1,5 +1,9 @@
 # LingChat DLC extension SDK
 
+SDK 0.2 exposes [host integration interfaces](docs/extension-api.md) for views,
+menus, event registration, typed run state, command dispatch and lifecycle policy.
+Specific horror presentations, translations and helper pages stay in this repository.
+
 These readable source packages contain the shared game runtime and native story
 presentation extracted from LingChat PR #884. Game and story content stays under
 `packages/` and continues to use the existing catalogs, manifests and downloads.

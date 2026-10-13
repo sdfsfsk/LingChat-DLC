@@ -1,3 +1,4 @@
+use crate::story::channels::NativeChannels;
 use ling_chat_main::AppState;
 use serde::Serialize;
 use tauri::{AppHandle, Manager};
@@ -256,6 +257,7 @@ async fn validate_force_choice_warp_ticket(
     let state = app.state::<AppState>();
     let mut channels = state.script_channels.lock().await;
     let guard = channels
+        .extension_mut::<NativeChannels>()
         .force_choice_guard
         .as_mut()
         .ok_or("当前没有可牵引鼠标的 force_choice")?;
@@ -367,7 +369,11 @@ pub async fn cancel_script_cursor_warp(
     }
     let state = window.state::<AppState>();
     let mut channels = state.script_channels.lock().await;
-    let Some(guard) = channels.force_choice_guard.as_mut() else {
+    let Some(guard) = channels
+        .extension_mut::<NativeChannels>()
+        .force_choice_guard
+        .as_mut()
+    else {
         return Ok(());
     };
     if guard.request_id != request_id {
@@ -386,6 +392,7 @@ pub async fn script_submit_poem(
     let state = app.state::<AppState>();
     let mut channels = state.script_channels.lock().await;
     let pending = channels
+        .extension_mut::<NativeChannels>()
         .poem_tx
         .as_ref()
         .ok_or("当前没有等待写诗结果的脚本事件")?;
@@ -393,7 +400,11 @@ pub async fn script_submit_poem(
         return Err("写诗提交票据无效或已过期".to_string());
     }
     let raw = serde_json::to_string(&result).map_err(|error| format!("写诗结果无效: {error}"))?;
-    let pending = channels.poem_tx.take().expect("poem_tx checked above");
+    let pending = channels
+        .extension_mut::<NativeChannels>()
+        .poem_tx
+        .take()
+        .expect("poem_tx checked above");
     pending
         .tx
         .send(raw)

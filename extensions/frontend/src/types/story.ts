@@ -70,3 +70,13 @@ export interface ScriptPoemGameEvent extends ScriptEvent {
   normalLoopStart: number;
   glitchLoopStart: number;
 }
+
+export type ExtensionScriptEvent =
+  | ScriptJumpscareEvent
+  | ScriptWaitEvent
+  | ScriptWindowTitleEvent
+  | ScriptGlitchWindowEvent
+  | ScriptConsoleWindowEvent
+  | ScriptVoiceShiftEvent
+  | ScriptForceChoiceEvent
+  | ScriptPoemGameEvent;

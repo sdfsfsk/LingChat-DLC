@@ -1,3 +1,5 @@
+mod commands;
+pub use commands::handler as command_handler;
 pub mod games;
 pub mod story;
 pub fn install() {
