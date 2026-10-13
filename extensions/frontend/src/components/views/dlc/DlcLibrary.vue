@@ -117,7 +117,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { confirm, open } from "@tauri-apps/plugin-dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import {
   cachedGameCatalog,
@@ -137,8 +137,10 @@ import {
 } from "@lingchat/host/api/services/plugins";
 import { useRouter } from "vue-router";
 import { useUIStore } from "@lingchat/host/stores/modules/ui/ui";
+import { useDialogStore } from "@lingchat/host/stores/modules/ui/dialog";
 const router = useRouter();
 const uiStore = useUIStore();
+const dialogStore = useDialogStore();
 
 const emit = defineEmits<{ changed: [] }>();
 const { t } = useI18n();
@@ -241,10 +243,10 @@ const play = async (id: string, game: GameSpec) => {
 const remove = (id: string) =>
   run(async () => {
     if (
-      !(await confirm(t("views.dlc.uninstallConfirm"), {
-        title: t("views.dlc.title"),
-        kind: "warning",
-      }))
+      !(await dialogStore.confirm(
+        t("views.dlc.uninstallConfirm"),
+        t("views.dlc.title"),
+      ))
     )
       return;
     await deletePlugin(id);
@@ -265,13 +267,11 @@ const importArchive = () =>
 const migrate = (id: string, game: GameSpec) =>
   run(async () => {
     if (
-      !(await confirm(
+      !(await dialogStore.confirm(
         t("views.dlc.migrateConfirm") +
           "\n" +
           game.legacy_storage_keys.join("\n"),
-        {
-          title: game.name,
-        },
+        game.name,
       ))
     )
       return;
