@@ -1,0 +1,25 @@
+"""Build deterministic ZIPs and the versioned download catalog (Python 3.11+)."""
+import hashlib, json, os, pathlib, tomllib, zipfile
+root = pathlib.Path(__file__).resolve().parent.parent
+repository = os.environ.get('DLC_REPOSITORY', 'sdfsfsk/LingChat-DLC')
+tag = os.environ.get('DLC_RELEASE_TAG', 'v1.0.0')
+entries = []
+for folder in ['twilight', 'star-trail']:
+    source = root / 'dist' / folder
+    manifest = tomllib.loads((source / 'manifest.toml').read_text(encoding='utf-8'))
+    filename = f"{manifest['id']}-{manifest['version']}.zip"
+    archive = root / 'dist' / filename
+    with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for path in sorted(source.rglob('*')):
+            if path.is_file():
+                info = zipfile.ZipInfo(path.relative_to(source).as_posix(), date_time=(2026, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                info.external_attr = 0o100644 << 16
+                z.writestr(info, path.read_bytes())
+    blob = archive.read_bytes()
+    entries.append({ 'id': manifest['id'], 'name': manifest['name'], 'description': manifest['description'],
+        'version': manifest['version'], 'url': f'https://github.com/{repository}/releases/download/{tag}/{filename}',
+        'sha256': hashlib.sha256(blob).hexdigest(), 'size': len(blob), 'api_version': 1 })
+catalog = {'schema_version': 1, 'packages': entries}
+(root / 'catalog.json').write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+print(json.dumps(catalog, ensure_ascii=False, indent=2))

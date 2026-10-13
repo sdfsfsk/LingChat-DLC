@@ -1,0 +1,12 @@
+id = "twilight-rhythm"
+name = "暮色节拍"
+description = "四键像素音游：原创合成曲、MIDI 导入、移动端触控与独立存档。"
+version = "1.0.0"
+author = "sdfsfsk / LingChat contributors"
+
+[[games]]
+id = "twilight"
+name = "暮色节拍"
+entry = "web/index.html"
+api_version = 1
+legacy_storage_keys = ["twilight-cadence-settings", "twilight-imported-songs"]

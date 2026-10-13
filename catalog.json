@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "packages": [
+    {
+      "id": "twilight-rhythm",
+      "name": "暮色节拍",
+      "description": "四键像素音游：原创合成曲、MIDI 导入、移动端触控与独立存档。",
+      "version": "1.0.0",
+      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.0.0/twilight-rhythm-1.0.0.zip",
+      "sha256": "d3d51735cee4bde198bae2bdcc0fe5c0c6652325f0085bc5160a8b62e29ae70b",
+      "size": 3615661,
+      "api_version": 1
+    },
+    {
+      "id": "star-trail",
+      "name": "星灯远征",
+      "description": "七关横版跳跃射击：Boss、装备商店、机关与程序合成音乐，支持键盘和触控。",
+      "version": "1.0.0",
+      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.0.0/star-trail-1.0.0.zip",
+      "sha256": "74046b54b5df87cb65c0c0a8fb67d7e0f9bec8e73734125846bd64c4c4d1611e",
+      "size": 58003,
+      "api_version": 1
+    }
+  ]
+}
