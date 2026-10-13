@@ -1,0 +1,89 @@
+name: 2-4 第二首腐化诗
+
+# Act2 最后一局：每个词位可出现乱码词；第二张特殊诗后直接进入删除演出。
+# 玩家结果会先显示，再被台本强行改写为钦灵轴。
+
+events:
+  - type: narration
+    text: |
+      笔记本又推到你面前。
+      词库表面没有变化。可右页每次刷新时，都像有一行太长的字从角落闪过去。
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: act2
+    glitch: true
+
+  - type: narration
+    condition: poem_glitch == true
+    text: 你点中了那串不该存在的字。白屏退去后，结算栏只剩下「SCRIPT」。
+
+  - type: narration
+    condition: poem_tone == void
+    text: 明明是“空白”的分数更高。结算栏闪了两次，却把赢家改成了「SCRIPT」。
+
+  - type: horror_log
+    text: '> poem_winner override: SCRIPT // source=unknown'
+    lines: 3
+
+  - type: narration
+    displayName: RUNTIME
+    text: '> poem_winner override: SCRIPT // source=unknown'
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'poem_tone = script'
+
+  # 钦灵读诗：规则已被夺走，黑话含量继续上升
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】嗯……今天的诗。
+      【正常】新人，你的词越来越锋利了。
+
+  - type: dialogue
+    character: ql
+    emotion: 伤心
+    text: |
+      【伤心】锋利到……能划破纸。
+      【伤心】你看这一页，纸都卷起来了。像伤口的边。
+
+  - type: narration
+    text: |
+      钦灵用手指抚过那一页。
+      她的指尖在发抖。
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】你知道吗，坏掉的诗是没人读的。
+      【正常】坏掉的角色也一样。
+
+  # v2.2 紧凑流程投放第二张后直接进入终章；第三局仍保留供旧存档续播。
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'special_return = end'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'special_poem_a2'

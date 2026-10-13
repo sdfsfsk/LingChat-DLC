@@ -5,7 +5,7 @@ on:
       tag:
         description: Release tag (bump package manifest versions first)
         required: true
-        default: v1.0.1
+        default: v1.1.0
 permissions:
   contents: write
 jobs:
@@ -32,11 +32,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}
         run: |
-          gh release create "$RELEASE_TAG" dist/*.zip --target "$GITHUB_SHA" --title "Game DLC $RELEASE_TAG" --generate-notes
+          gh release create "$RELEASE_TAG" dist/*.zip --target "$GITHUB_SHA" --title "LingChat DLC $RELEASE_TAG" --generate-notes
       - name: Publish catalog after assets are available
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add catalog.json
+          git add catalog.json catalog-v2.json
           git diff --cached --quiet || git commit -m "Update downloadable DLC catalog"
           git push origin HEAD:main

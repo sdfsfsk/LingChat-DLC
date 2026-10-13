@@ -1,0 +1,117 @@
+name: 0-0 角色标记迁移
+
+# v2.1 首次运行或旧存档升级时，只执行一次的布局迁移。先把旧状态归类为应有的
+# 文件集合，再原子式地把 marker_schema_version 写到最后；中途退出会安全重放。
+events:
+  - type: set_variable
+    options:
+      - condition: current_act == 1
+        actions:
+          - type: set_var
+            content: 'marker_target = act1'
+      - condition: current_act == 2
+        actions:
+          - type: set_var
+            content: 'marker_target = act2'
+      - condition: current_act == 3
+        actions:
+          - type: set_var
+            content: 'marker_target = act3'
+      - condition: current_act >= 4 && last_ending == release
+        actions:
+          - type: set_var
+            content: 'marker_target = release'
+      - condition: current_act >= 4 && last_ending == loop
+        actions:
+          - type: set_var
+            content: 'marker_target = loop'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && last_ending == release
+        actions:
+          - type: set_var
+            content: 'marker_target = release'
+          - type: set_var
+            content: 'current_act = 4'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && last_ending == loop
+        actions:
+          - type: set_var
+            content: 'marker_target = loop'
+          - type: set_var
+            content: 'current_act = 4'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && last_ending == watcher
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+          - type: set_var
+            content: 'current_act = 5'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && last_ending == seventh
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+          - type: set_var
+            content: 'current_act = 5'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && playthrough == 2
+        actions:
+          - type: set_var
+            content: 'marker_target = act2'
+          - type: set_var
+            content: 'current_act = 2'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && playthrough == 3
+        actions:
+          - type: set_var
+            content: 'marker_target = act3'
+          - type: set_var
+            content: 'current_act = 3'
+      - condition: current_act != 1 && current_act != 2 && current_act != 3 && current_act != 4 && current_act != 5 && playthrough >= 4
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+          - type: set_var
+            content: 'current_act = 4'
+      - condition: current_act == 4 && marker_target != release && marker_target != loop
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+      - condition: current_act >= 5 && marker_target != release && marker_target != loop
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+      - condition: marker_target != act1 && marker_target != act2 && marker_target != act3 && marker_target != release && marker_target != loop && marker_target != both
+        actions:
+          - type: set_var
+            content: 'marker_target = both'
+          - type: set_var
+            content: 'current_act = 1'
+
+  - type: character_file
+    condition: marker_target == act1 || marker_target == act3 || marker_target == loop || marker_target == both
+    action: ensure
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_target == act1 || marker_target == act2 || marker_target == release || marker_target == both
+    action: ensure
+    file: ql.chr
+
+  - type: character_file
+    condition: marker_target == act2 || marker_target == release
+    action: delete
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_target == act3 || marker_target == loop
+    action: delete
+    file: ql.chr
+
+  - type: main_menu_effect
+    condition: marker_target == act1 && playthrough == 1
+    theme: normal
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'marker_schema_version = 1'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_boot'

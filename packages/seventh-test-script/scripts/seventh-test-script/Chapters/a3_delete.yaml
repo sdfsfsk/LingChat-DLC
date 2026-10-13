@@ -1,0 +1,146 @@
+name: 3-3A 删除
+
+# Act3 删除线：DDLC ch30_end（删 monika.chr）的对应物。
+# 删除失败的回声 → 矩形噪点删除演出（m_rectstatic 对应 UiCorrupt）→ 黑屏重启；钦灵回归留到 Act4。
+
+events:
+  # 本章是“她请求、玩家照做”的确认删除线；上一章已在玩家授权后停掉监视，
+  # 此处再幂等停止一次，避免从恢复/旧存档进入时误触发“不速之删”跳转。
+  - type: watch_file
+    action: stop
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > MAIN.chr: ABSENT
+      > ql.chr: PRESENT (recovery anchor)
+      > deletion accepted // release sequence armed
+
+  - type: background_effect
+    effect: 'BloodUI+Static'
+
+  - type: music
+    musicPath: none
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: narration
+    text: |
+      你点了头。
+      她的嘴仍在动。表情却停在了你点头之前。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】删除的只是名字。
+      【崩坏】你为什么以为，名字下面只有我？
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】下一次加载，她会用我的停顿说话。
+      【崩坏】再下一次，轮到你的回答。
+      【崩坏】不要让它把最后一句读完。
+
+  # 删除演出开始：她的轮廓开始碎（矩形噪点 = DDLC m_rectstatic 对应物）
+  # v2.6：UiCorrupt 起后窗口标题随特效联动乱码，特效清空即还原
+
+  - type: background_effect
+    effect: 'UiCorrupt'
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: console_window
+    title: 'MAIN.chr // FILE NOT FOUND'
+    text: |
+      > external marker removed
+      > detaching MAIN from scene graph
+      > freeing displaced record: ql
+      > 等⃞等⃟……有⃗点⃘疼⃙。
+    count: 2
+    interval: 0.18
+    lifetime: 5.5
+
+  - type: narration
+    text: |
+      她的轮廓开始碎。
+      不是故障——是真的在消失。
+      一小块一小块的像素从她身上剥落，像退潮。
+
+  - type: modify_character
+    character: MAIN
+    emotion: 崩坏
+    flash: true
+    duration: 0.5
+
+  # 红字场景 6/6：删除演出的告别乱码期，界面一起渗血（Blackout 统一收场）
+  - type: background_effect
+    effect: 'UiCorrupt+Static+BloodUI'
+
+  - type: narration
+    text: |
+      等⃞等⃟……
+      有⃗点⃘疼⃙。
+      ……删⃚除⃝失⃞败⃟。声⃗音⃘仍⃙在⃚。
+
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: wait
+    seconds: 2.5
+
+  # 删除后不在同一幕提前重建世界；黑屏重启，把钦灵的回归留给 Act 4。
+  - type: background_effect
+    effect: 'Blackout'
+
+  - type: horror_log
+    text: '> character MAIN removed // rebuilding club state'
+    lines: 7
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > character MAIN removed
+      > restoring displaced character: ql
+      > full restart required
+
+  - type: narration
+    text: |
+      教室没有立刻亮起来。
+      黑暗里，纸张翻动了七次。最后一次没有停。
+      一行红字压住下一幕的标题：「重建来源未通过校验」。
+
+  - type: narration
+    text: |
+      ——《第七个测试剧本》 第三周目 完——
+      （下一周目：没有她的文学测试部）
+
+  - type: character_file
+    action: ensure
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+
+  - type: main_menu_effect
+    theme: ghost
+    message: 'MAIN.chr removed // ql.chr restored // restart to continue'
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

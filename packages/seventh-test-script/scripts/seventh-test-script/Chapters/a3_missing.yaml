@@ -1,0 +1,59 @@
+name: 3-0B 离线删除
+
+# Act3 外部删除在重开时被发现。只收束本剧本状态并回主菜单，不强制退出 LingChat。
+events:
+  - type: music
+    musicPath: none
+
+  - type: background_effect
+    effect: Blackout
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: console_window
+    style: warning
+    title: 'LingChat Recovery'
+    text: |
+      MAIN.chr disappeared while the script was not running.
+      Active dialogue process cannot be resumed.
+      Rebuilding remaining club state from ql.chr ...
+    count: 2
+    interval: 0.2
+    lifetime: 5.0
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > MAIN.chr not found at ACT3 startup
+      > the room closed before she could say goodbye
+      > restoring displaced character: ql
+
+  - type: narration
+    text: |
+      黑暗里，窗台是空的。
+      你只来得及看见椅子上留着一张纸：
+      「这样也好。别把前辈忘在这里。」
+
+  - type: character_file
+    action: ensure
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+
+  - type: main_menu_effect
+    theme: ghost
+    message: 'MAIN.chr missing // ql.chr recovery staged'
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

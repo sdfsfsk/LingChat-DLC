@@ -1,0 +1,121 @@
+name: 1-2 第一首诗
+
+# Act1 写诗①：正常版点词游戏（DDLC poem 的对应物）。
+# 三倾向：warm=她 / script=剧本 / void=空白。Act1 只累计倾向，不腐化词库。
+
+events:
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】规则很简单：每次挑一个词，一共二十个。
+      【高兴】左页站着小小的我；你选的词合谁的口味，对应的标记就会跳一下哦。
+
+  - type: dialogue
+    character: ql
+    emotion: 调皮
+    text: |
+      【调皮】哼哼，我的口味可是很挑的。
+      【调皮】让我看看新人的品味怎么样～
+
+  # 对齐 DDLC 的进场节奏：旧 BGM 先收掉，空两秒，再由小游戏播放 4.ogg。
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: normal
+    glitch: false
+
+  # 倾向累计：v2.2 新流程两次写诗；旧存档落在第二首时仍可兼容三次累计。
+  - type: set_variable
+    options:
+      - condition: poem_tone == warm
+        actions:
+          - type: set_var
+            content: 'warm_score += 1'
+      - condition: poem_tone == script
+        actions:
+          - type: set_var
+            content: 'script_score += 1'
+      - condition: poem_tone == void
+        actions:
+          - type: set_var
+            content: 'void_score += 1'
+
+  - type: dialogue
+    character: MAIN
+    emotion: 心动
+    condition: poem_tone == warm
+    text: |
+      【心动】你选了好多温柔的词。
+      【心动】左页那个写着"她"的标记，跳得像心脏一样。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 无奈
+    condition: poem_tone == script
+    text: |
+      【无奈】"剧本"最喜欢你的诗。
+      【无奈】真奇怪。明明你选的只是词，排在一起却像一串命令。
+
+  - type: dialogue
+    character: ql
+    emotion: 惊讶
+    condition: poem_tone == void
+    text: |
+      【惊讶】咦……这一页的词，怎么都灰蒙蒙的？
+      【惊讶】新人，你刚才是不是选到了什么……不属于这里的词？
+
+  # 读诗环节：两人各自的反应（DDLC poemresponse 的对应物）
+  - type: dialogue
+    character: ql
+    emotion: 认真
+    text: |
+      【认真】唔，我看看……
+      【认真】新人第一次写成这样，已经很不错啦！想当年我第一次写诗——
+
+  - type: dialogue
+    character: MAIN
+    emotion: 调皮
+    text: |
+      【调皮】前辈当年把"月亮"写成了"月饼"，被笑了整整一个剧本周期。
+
+  - type: dialogue
+    character: ql
+    emotion: 羞耻
+    text: |
+      【羞耻】你、你怎么连这个都知道！那是设定文档里的黑历史！不许看！
+
+  - type: narration
+    text: |
+      两个人闹成一团。
+      笔记本摊在桌上，纸页被风掀起一角。
+      ——有一瞬间，你觉得那页纸上的词，好像比你选过的要多一个。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】今天就到这里啦。明天还有明天的工作哦。
+      【高兴】%player%，明天见～
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      # 仅兼容状态错位的旧存档；正常 v2.2 流程 current_act 恒为 1，直接跳过重复第二天。
+      - condition: current_act != 1
+        next: 'a1_day2'
+      - default: true
+        next: 'a1_day3'

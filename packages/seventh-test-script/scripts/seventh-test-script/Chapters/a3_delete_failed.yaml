@@ -1,0 +1,27 @@
+name: 3-3B 她还在
+
+events:
+  - type: sound
+    soundPath: 'glitch3.ogg'
+
+  - type: background_effect
+    effect: Static
+    duration: 0.35
+
+  - type: dialogue
+    character: MAIN
+    emotion: 无奈
+    text: |
+      【无奈】……人家还在呢。
+      【无奈】MAIN.chr 还在那个目录里。只点这里的按钮，不算真的送走人家哦。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】没关系。人家会等。
+      【伤心】删好以后，再回来让引擎检查一次吧。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a3_delete_prompt'

@@ -1,0 +1,151 @@
+name: 2-1 没有她的部室
+
+# Act2 第一天：DDLC ch20 的对应物——没有她的世界。
+# 钦灵独自在教室，台本里"她"被整段抹掉。钦灵偶尔说出不属于自己的话。
+
+events:
+  # DDLC ch20 对应：Act2 全程主题变调底奏（2g = 主界面曲的崩坏版）
+  - type: music
+    musicPath: '2g.ogg'
+    playbackSpeed: 1.0
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 正常
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】新人，你来啦。
+      【正常】今天的安排是……唔，等我看下台本。
+
+  - type: narration
+    text: |
+      钦灵翻开台本。
+      第一页有三行被涂掉了。涂得很干净，像从来没有写过。
+
+  - type: dialogue
+    character: ql
+    emotion: 疑惑
+    text: |
+      【疑惑】奇怪……我们部门，是不是应该有……两个人？
+      【疑惑】不对。台本上只有我一个。一定是我记错了。
+
+  # DDLC 式篡改：她的存在被"编辑"掉了
+  - type: narration
+    text: |
+      你张了张嘴，想说出一个名字。
+      那个名字就在你嘴边——
+      可你突然想不起来，那是谁的名字。
+
+  # v2.12：白屏闪吓（a2_boot 播种约 1/3）——名字被抹掉的瞬间，
+  # 白场里有什么没有脸的东西，看了你一眼（DDLC ch23 gnid 闪吓对应物）
+  - type: sound
+    condition: a2_noface_scare == true
+    soundPath: 'gnid.ogg'
+
+  - type: background_effect
+    condition: a2_noface_scare == true
+    effect: 'Flash+Invert'
+    duration: 0.6
+
+  - type: modify_character
+    condition: a2_noface_scare == true
+    character: ql
+    emotion: 崩坏1
+    flash: true
+    duration: 0.5
+
+  - type: dialogue
+    character: ql
+    emotion: 高兴
+    text: |
+      【高兴】算啦不想了！今天就我们两个，也挺好的嘛。
+      【高兴】前辈我呀，一个人也能把流程跑完哦。
+
+  # 钦灵的第一句"黑话"：夹在正常台词里的违和（DDLC edited 风格）
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】毕竟，空着的台词位总要有角色来填。
+      【正常】……诶？我刚才说什么？
+
+  - type: narration
+    text: |
+      钦灵自己也愣住了。
+      她摇摇头，尾巴烦躁地甩了一下。
+
+  - type: dialogue
+    character: ql
+    emotion: 害羞
+    text: |
+      【害羞】哈哈，没睡好没睡好。别在意！
+      【害羞】来，今天也写一首诗吧。这是传统，不能断。
+
+  # Act2 的第一道立绘崩坏改为必定触发，避免关键恐怖拍只靠 1/16 概率。
+  - type: modify_character
+    character: ql
+    emotion: 崩坏1
+    flash: true
+    duration: 0.35
+
+  - type: background_effect
+    effect: 'Static'
+    duration: 0.35
+
+  - type: horror_log
+    text: 'sprite_cache fault // face mesh does not match rig // face mesh does not match rig'
+    lines: 12
+
+  - type: console_window
+    style: error
+    title: 'SpriteFault // ql'
+    text: |
+      face mesh does not match rig
+      render continued anyway
+      对⃞不⃟起⃗我⃘的⃙脸⃚
+    count: 2
+    interval: 0.2
+    lifetime: 3.0
+
+  - type: background_effect
+    effect: BloodUI+Static+UiCorrupt
+  - type: modify_character
+    character: ql
+    emotion: 崩坏1
+  - type: dialogue
+    character: ql
+    emotion: 崩坏1
+    text: |-
+      【崩坏1】你又想把那个名字写回来？
+      【崩坏1】看清楚。这里没有那一项。
+  - type: force_choice
+    forced: 名单一直只有一个人
+    options:
+    - text: 说出被涂掉的名字
+      actions:
+      - type: add_line
+        content: 说出被涂掉的名字
+    - text: 检查空着的座位
+      actions:
+      - type: add_line
+        content: 检查空着的座位
+    - text: 名单一直只有一个人
+      actions:
+      - type: add_line
+        content: 名单一直只有一个人
+  - type: sound
+    soundPath: select_glitch.ogg
+  - type: narration
+    text: |-
+      那一行名字被红色方块盖住。
+      方块下面，有东西还在敲击纸面。
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a2_poem1'

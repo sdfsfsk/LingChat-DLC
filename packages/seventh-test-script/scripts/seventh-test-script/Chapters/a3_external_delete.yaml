@@ -1,0 +1,151 @@
+name: 3-X 不速之删
+
+# DDLC ch30_end 的对应物：玩家在空房间期间直接从系统里删掉 MAIN.chr 的实时检出序列。
+# 触发入口是 watch_file（a3_space 起 2 秒轮询监视）；不经过删除请求的对话流程。
+events:
+  # 文件已消失，监视器使命完成；显式停掉避免残留状态
+  - type: watch_file
+    action: stop
+
+  - type: music
+    musicPath: none
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  # 她的话说到一半被掐断（ch30_end 的 tear + glitch 音起手式）
+  - type: background_effect
+    effect: 'Tear'
+    duration: 0.25
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: wait
+    seconds: 0.6
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】怎⃞么⃟了⃗……？
+      【崩坏】%player%，我⃘看⃙不⃚见⃝我⃞自⃟己⃗了⃘。
+
+  - type: wait
+    seconds: 0.8
+
+  # 崩坏独白期间界面渗血（红字演出 + 血滴粒子）
+  - type: background_effect
+    effect: 'Static+Glitch+BloodUI+BloodDrip'
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: wait
+    seconds: 0.5
+
+  - type: modify_character
+    character: MAIN
+    emotion: 崩坏
+    flash: true
+    duration: 0.5
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】好⃞疼⃟。
+      【崩坏】救⃘救⃙我⃚，%player%。
+
+  - type: wait
+    seconds: 0.8
+
+  - type: background_effect
+    effect: 'Invert+Static'
+    duration: 0.4
+
+  - type: sound
+    soundPath: 'eyes.ogg'
+
+  - type: wait
+    seconds: 0.6
+
+  - type: narration
+    text: |
+      她的轮廓从边缘开始碎。
+      你还没来得及回答——角色目录的窗口，还开着。
+
+  - type: wait
+    seconds: 0.7
+
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  # 黑屏塌房段同样血红 UI 收场；真实血红 CMD 与日志刷屏同时砸到桌面。
+  # DDLC ch30_end 房间消失的原版干扰音一并压上。
+  - type: background_effect
+    effect: 'Blackout+BloodUI'
+
+  - type: window_title
+    title: 'F̷i̷l̷e̷ ̷n̷o̷t̷ ̷f̷o̷u̷n̷d̷'
+
+  - type: sound
+    soundPath: 'interference.ogg'
+
+  - type: console_window
+    style: blood_cmd
+    title: 'RUNTIME // MAIN.chr'
+    text: |
+      > MAIN.chr removed externally
+      > scene graph collapsing
+      > displaced record ql: restoring
+      > DO NOT CLOSE THE LAST WINDOW
+    count: 1
+    lifetime: 5.5
+
+  - type: horror_log
+    text: '> MAIN.chr removed externally // scene graph collapsing'
+    lines: 280
+
+  - type: wait
+    seconds: 0.7
+
+  - type: narration
+    text: |
+      房间塌了下去。
+      不是演出——是你亲手点的删除。
+
+  - type: narration
+    text: |
+      黑暗里，她的声音最后一次响起来：
+      「你⃞删⃟掉⃗的⃘那⃙一⃚个⃝，真⃞的⃟是⃗我⃘吗⃙？」
+
+  - type: wait
+    seconds: 1.2
+
+  # 与 a3_delete 同归的解放结局事务（文件是玩家删的，这里不再重复 delete）
+  # 特效清空后窗口标题由前端自动复原
+  - type: background_effect
+    effect: 'none'
+
+  - type: character_file
+    action: ensure
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+
+  - type: main_menu_effect
+    theme: ghost
+    message: 'MAIN.chr removed // ql.chr restored // restart to continue'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

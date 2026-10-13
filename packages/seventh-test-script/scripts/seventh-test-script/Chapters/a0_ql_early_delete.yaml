@@ -1,0 +1,43 @@
+name: 0-3 先于台词消失
+
+# 第一幕也不渲染已被玩家从外部删掉的钦灵。
+events:
+  - type: music
+    musicPath: none
+
+  - type: background_effect
+    effect: Blackout
+
+  - type: main_menu_effect
+    theme: ghost
+
+  - type: sound
+    soundPath: 'glitch3.ogg'
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > validating external character index
+      > ql.chr .................................. NOT FOUND
+      > required cast incomplete; Act 01 cannot start
+
+  - type: narration
+    text: |
+      推开门前，你听见里面有人叫了一声“新人”。
+      门真正打开时，声音的主人却已经不在角色名单里。
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      角色标记目录已经为你打开。
+      主菜单的「重置记忆」会从 DLC 内的只读模板恢复 ql.chr。
+
+  - type: character_file
+    action: open_folder
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

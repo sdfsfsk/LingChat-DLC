@@ -1,0 +1,72 @@
+name: 0-1 可重放收尾
+
+# marker_checkpoint 在任何破坏性文件变更之前持久化。此章把未完成的幕末事务
+# 幂等重放到完整状态；只有文件、幕次和菜单都成功后才清除 checkpoint。
+events:
+  - type: character_file
+    condition: marker_checkpoint == act1_to_act2 || marker_checkpoint == legacy_release
+    action: ensure
+    file: ql.chr
+
+  - type: character_file
+    condition: marker_checkpoint == act1_to_act2 || marker_checkpoint == legacy_release
+    action: delete
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_checkpoint == act2_to_act3 || marker_checkpoint == legacy_loop
+    action: ensure
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_checkpoint == act2_to_act3 || marker_checkpoint == legacy_loop
+    action: delete
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - condition: marker_checkpoint == act1_to_act2
+        actions:
+          - type: set_var
+            content: 'current_act = 2'
+      - condition: marker_checkpoint == act2_to_act3
+        actions:
+          - type: set_var
+            content: 'current_act = 3'
+      - condition: marker_checkpoint == legacy_release
+        actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+      - condition: marker_checkpoint == legacy_loop
+        actions:
+          - type: set_var
+            content: 'last_ending = loop'
+          - type: set_var
+            content: 'current_act = 4'
+      - actions:
+          - type: set_var
+            content: 'marker_schema_version = 1'
+
+  - type: main_menu_effect
+    condition: marker_checkpoint == act1_to_act2
+    theme: blood
+
+  - type: main_menu_effect
+    condition: marker_checkpoint == act2_to_act3 || marker_checkpoint == legacy_release
+    theme: ghost
+
+  - type: main_menu_effect
+    condition: marker_checkpoint == legacy_loop
+    theme: blood
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'marker_checkpoint = none'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_boot'

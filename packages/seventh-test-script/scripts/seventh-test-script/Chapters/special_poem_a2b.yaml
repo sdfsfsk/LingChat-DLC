@@ -1,0 +1,13 @@
+name: 2-S2 特殊诗兼容入口
+
+# 旧存档可能仍指向本章；统一转入新的无放回特殊诗章节，完成后进入 Act2 终章。
+events:
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'special_return = end'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'special_poem_a2'

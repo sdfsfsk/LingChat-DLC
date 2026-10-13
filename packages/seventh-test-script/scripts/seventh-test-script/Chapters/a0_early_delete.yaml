@@ -1,0 +1,47 @@
+name: 0-2 过早缺失
+
+# DDLC s_kill_early / ch0_kill 的 LingChat 安全对应物：缺少必需标记时不启动角色，
+# 但只结束本 DLC 并回主菜单，不退出或损坏整个 LingChat。
+events:
+  - type: music
+    musicPath: none
+
+  - type: background_effect
+    effect: Blackout
+
+  - type: main_menu_effect
+    theme: blood
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > validating external character index
+      > MAIN.chr ................................ NOT FOUND
+      > refusing to construct missing role
+
+  - type: narration
+    text: |
+      教室没有打开。
+      门牌上原本写着的名字，被谁从外面撕掉了。
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      角色标记目录已经为你打开。
+      「重置记忆」会从剧本包安全恢复 MAIN.chr 与 ql.chr；它们只是本 DLC 的无害剧情标记。
+
+  - type: character_file
+    action: open_folder
+
+  - type: wait
+    seconds: 1.5
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

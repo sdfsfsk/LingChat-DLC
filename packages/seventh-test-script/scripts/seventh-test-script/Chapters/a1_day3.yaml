@@ -1,0 +1,155 @@
+name: 1-5 裂缝
+
+# v2.2 紧凑裂缝段：第一次写诗后直接进入明确异常，不再重复三天日常。
+events:
+  - type: background
+    imagePath: '白天.webp'
+    transition: 0.45
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 0.88
+    condition: bgm_detune != true
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 0.52
+    condition: bgm_detune == true
+
+  # 跳过兼容章后钦灵不会自动清台；先收掉她，空椅和稍后现身才成立。
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 担心
+
+  - type: narration
+    text: |
+      再抬头时，窗外已经是第三天。
+      钦灵的椅子空着；日期从“第一天”直接跳到了“第三天”。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 无奈
+    text: |
+      【无奈】我们明明才写完第一首诗，台本却说已经过了三天。
+      【无奈】还有一句话，一直有人塞进我的嘴里——
+
+  - type: dialogue
+    character: MAIN
+    emotion: 害怕
+    condition: false_memory == true
+    text: |
+      【害怕】你昨天还答应过我：把钦灵锁在门外。
+      【害怕】……可“昨天”明明根本没有发生过。
+
+  - type: sound
+    soundPath: 'eyes.ogg'
+
+  - type: background_effect
+    effect: 'Tear+Static'
+    duration: 0.28
+
+  # 禁句演出：立绘切崩坏 + 背景切崩坏 + 血字/UI 崩坏常驻到这句念完 + 声音压沉 + 窗口标题乱码 + 弹窗轰炸（红字场景 1/5）
+  - type: modify_character
+    character: MAIN
+    emotion: 崩坏
+
+  - type: background
+    imagePath: '白天-崩坏1.webp'
+    transition: 0
+
+  - type: background_effect
+    effect: 'BloodUI+UiCorrupt'
+
+  - type: voice_shift
+    rate: 0.75
+    pitch: -4
+
+
+  - type: console_window
+    style: error
+    title: 'FO⃞RB⃟ID⃗D⃘E⃙N⃚ L⃝I⃞N⃟E⃗'
+    text: |
+      do not close the window
+      do not close the window
+      我⃘们⃙才⃚可⃝以⃞动⃟
+    count: 2
+    interval: 0.25
+    lifetime: 3.5
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】“等你关掉窗口以后，我们才可以动。”
+
+  # 玩家确认跳过这句后：立绘/背景/特效/声线/窗口标题全部恢复正常
+  - type: modify_character
+    character: MAIN
+    emotion: 担心
+
+  - type: background
+    imagePath: '白天.webp'
+    transition: 0.3
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+
+  - type: background_effect
+    effect: 'none'
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 害怕
+
+  - type: dialogue
+    character: ql
+    emotion: 害怕
+    text: |
+      【害怕】别念出来！那不是给角色看的台词！
+      【害怕】周末演出提前了。今晚就开始——谁都不许退出。
+
+  - type: horror_log
+    text: 'FAST_FORWARD // day_1 -> day_3 // skipped dialogue still remembers you'
+    lines: 8
+
+  - type: narration
+    displayName: RUNTIME
+    condition: garble_line != true
+    text: '> FAST_FORWARD COMPLETE // skipped dialogue is still running'
+
+  - type: narration
+    displayName: RUNT⃞IM⃟E
+    condition: garble_line == true
+    text: '> F⃞A⃟S⃗T⃘_F⃙O⃚R⃝W⃞A⃟R⃗D // the skipped day is looking back'
+
+  # 稀有立绘异常仍作为额外彩蛋；主路线的恐怖信号不再依赖它。
+  - type: modify_character
+    character: ql
+    emotion: 崩坏1
+    flash: true
+    duration: 0.4
+    condition: rare_portrait_glitch == true
+
+  - type: background_effect
+    effect: 'Invert+Static'
+    duration: 0.35
+    condition: rare_portrait_glitch == true
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】%player%，再写最后一首诗就来找我。
+      【伤心】如果明天只剩一个人……不要相信她说自己没事。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_poem3'

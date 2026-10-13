@@ -1,0 +1,122 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 4-3A 出口不存在
+events:
+- type: background_effect
+  effect: BloodUI+UiCorrupt+Veins
+- type: music
+  musicPath: d.ogg
+  playbackSpeed: 1.0
+- type: narration
+  text: |-
+    缓存里找到一封写给你的信。
+    第一行仍然是「请记住我」。
+    下一行已经覆盖了第一行。
+  condition: poem_winner_act1 == her
+- type: narration
+  text: |-
+    「请记住我」
+    「请记住我」
+    「请把我读进下一次启动。」
+  condition: poem_winner_act1 == her
+- type: dialogue
+  character: ql
+  emotion: 崩坏2
+  text: 【崩坏2】你选过的每一个正确答案，都被拿来填补出口。
+  condition: poem_winner_act1 == script
+- type: dialogue
+  character: ql
+  emotion: 崩坏2
+  text: 【崩坏2】你给空白留了位置。现在它要把其余部分挤出去。
+  condition: poem_winner_act1 == void
+- type: dialogue
+  character: ql
+  emotion: 崩坏2
+  text: 【崩坏2】每一个名字都分到了一行。只有你的名字还在重复。
+  condition: poem_winner_act1 == balanced
+- type: narration
+  text: |-
+    诗页索引无法读取。
+    它没有找到你的选择，就开始逐个尝试你的回答。
+  condition: poem_winner_act1 != her && poem_winner_act1 != script && poem_winner_act1 != void && poem_winner_act1
+    != balanced
+- type: console_window
+  style: blood_cmd
+  title: RELEASE // HANDLER NOT FOUND
+  text: |-
+    release request accepted
+    exit handler: missing
+    fallback target: CURRENT READER
+  count: 1
+  lifetime: 4.5
+- type: background_effect
+  effect: BloodUI+Tear+Static
+  duration: 0.8
+- type: sound
+  soundPath: interference.ogg
+- type: narration
+  text: |-
+    你删除的角色槽位没有变空。
+    名字一格一格退掉，最后露出的，是下一次启动的按钮。
+- type: force_choice
+  forced: 确认：出口不存在
+  options:
+  - text: 读取原始结局
+    actions:
+    - type: add_line
+      content: 读取原始结局
+  - text: 撤销最后一行
+    actions:
+    - type: add_line
+      content: 撤销最后一行
+  - text: 确认：出口不存在
+    actions:
+    - type: add_line
+      content: 确认：出口不存在
+- type: modify_character
+  character: ql
+  emotion: 崩坏2
+- type: background_effect
+  effect: BloodUI+Glitch+BloodDrip
+- type: dialogue
+  character: ql
+  emotion: 崩坏2
+  text: |-
+    【崩坏2】错了。
+    【崩坏2】这一次不是角色文件。
+    【崩坏2】是剧本再也找不到开头了。
+- type: sound
+  soundPath: mscare.ogg
+- type: jumpscare
+  imagePath: ghost-ql-bw.webp
+  duration: 0.75
+- type: narration
+  text: |-
+    ERROR 0x00000007
+    SCRIPT_CORRUPTED
+    入口索引损坏。启动请求将被拒绝。
+  displayName: RUNTIME
+- type: background_effect
+  effect: Blackout+BloodUI
+- type: music
+  musicPath: none
+  playbackSpeed: 1.0
+- type: ambient
+  stop: true
+- type: voice_shift
+  rate: 1.0
+  pitch: 0
+- type: set_variable
+  options:
+  - actions:
+    - type: set_var
+      content: current_act = 5
+    - type: set_var
+      content: act4_done = true
+- type: main_menu_effect
+  theme: blood
+  message: SCRIPT_CORRUPTED // entry point unavailable
+- type: wait
+  seconds: 1.2
+- type: chapter_end
+  end_type: linear
+  next_chapter: end

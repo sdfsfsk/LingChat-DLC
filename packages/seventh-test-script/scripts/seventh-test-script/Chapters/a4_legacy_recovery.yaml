@@ -1,0 +1,98 @@
+name: 4-0 旧存档修复
+
+# 旧版/损坏状态的显式修复门。过去这里会因 last_ending 缺失而展示空章节，
+# 最后还默认写成 loop；现在必须由玩家确认记得的第三周目结局。
+events:
+  - type: music
+    musicPath: none
+
+  - type: background_effect
+    effect: Blackout
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > legacy playthrough state detected
+      > ACT4 is present, but the ACT3 ending key is missing
+      > automatic ending synthesis refused
+
+  - type: narration
+    text: |
+      这份记忆来自旧版本，第三周目的最后一页没有被完整保存。
+      请选择你记得发生过的事；这里不会再替你擅自写下结局。
+
+  - type: choices
+    options:
+      - text: 她让我送她走；MAIN.chr 已经被删除。
+        actions:
+          - type: set_var
+            content: 'marker_checkpoint = legacy_release'
+          - type: add_line
+            content: 她让我送她走；MAIN.chr 已经被删除。
+      - text: 我把她留下了。
+        actions:
+          - type: set_var
+            content: 'marker_checkpoint = legacy_loop'
+          - type: add_line
+            content: 我把她留下了。
+    allow_free: false
+
+  # 把玩家确认的旧结局同步到外部标记，而不是只补一个数据库变量。
+  - type: character_file
+    condition: marker_checkpoint == legacy_release
+    action: ensure
+    file: ql.chr
+
+  - type: character_file
+    condition: marker_checkpoint == legacy_release
+    action: delete
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_checkpoint == legacy_loop
+    action: ensure
+    file: MAIN.chr
+
+  - type: character_file
+    condition: marker_checkpoint == legacy_loop
+    action: delete
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - condition: marker_checkpoint == legacy_release
+        actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+      - condition: marker_checkpoint == legacy_loop
+        actions:
+          - type: set_var
+            content: 'last_ending = loop'
+          - type: set_var
+            content: 'current_act = 4'
+      - actions:
+          - type: set_var
+            content: 'marker_schema_version = 1'
+
+  - type: main_menu_effect
+    condition: marker_checkpoint == legacy_release
+    theme: ghost
+
+  - type: main_menu_effect
+    condition: marker_checkpoint == legacy_loop
+    theme: blood
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'marker_checkpoint = none'
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a4_main'

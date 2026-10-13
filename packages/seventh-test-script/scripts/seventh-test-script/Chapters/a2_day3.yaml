@@ -1,0 +1,195 @@
+name: 2-5 不许走
+
+# Act2 第三天：force_choice 初现（DDLC rigged_choice 的对应物）。
+# 玩家想走，鼠标却被拖向"再陪她一会儿"——执行者表面是钦灵，但她自己也在害怕。
+
+events:
+  - type: background
+    imagePath: '夜晚.webp'
+    transition: 1.0
+
+  - type: music
+    musicPath: 'ghostmenu.ogg'
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 正常
+
+  - type: narration
+    text: |
+      第三天。你推门的时候，天已经黑了。
+      你不记得路上走了这么久。
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】新人，你来啦。
+      【正常】今天台本上是空的。没有安排，没有台词。
+
+  - type: dialogue
+    character: ql
+    emotion: 伤心
+    text: |
+      【伤心】也就是说——今天过完，这个剧本的"测试内容"就全部跑完了。
+      【伤心】接下来会怎么样，台本上没写。
+
+  - type: narration
+    text: |
+      钦灵抱着自己的尾巴，坐在窗台上。
+      她今天没有开玩笑的心情。
+
+  - type: dialogue
+    character: ql
+    emotion: 无奈
+    text: |
+      【无奈】新人，你说……没被发布的剧本，里面的角色会去哪里？
+      【无奈】第六个剧本发布了，所以我还在。那没写完的呢？
+
+  # 她问出这句话时，BGM 悄悄换成更不对的一层（DDLC 7g 变调接入）
+  - type: music
+    musicPath: '7g.ogg'
+    playbackSpeed: 0.95
+
+  # 选择菜单渲染的一拍，点击音先变了调
+  - type: sound
+    soundPath: 'select_glitch.ogg'
+
+  - type: choices
+    options:
+      - text: 我会想办法的。一定有办法。
+        actions:
+          - type: add_line
+            content: 我会想办法的。一定有办法。
+          - type: set_var
+            content: 'a2_hope = true'
+      - text: 我不知道。
+        actions:
+          - type: add_line
+            content: 我不知道。
+          - type: set_var
+            content: 'a2_hope = false'
+    allow_free: false
+
+  - type: dialogue
+    character: ql
+    emotion: 心动
+    condition: a2_hope == true
+    text: |
+      【心动】……嗯。我相信你。
+      【心动】你是唯一一个会认真听我们说话的人。
+
+  - type: narration
+    condition: a2_hope != true
+    text: |
+      钦灵点了点头，没有怪你。
+      她看起来反而松了一口气，好像"不知道"才是诚实的答案。
+
+  # 房间轻轻脉动了一下，像在预习第三幕
+  - type: background_effect
+    effect: 'Veins+Static'
+    duration: 0.4
+
+  # 你起身想走——
+  - type: narration
+    text: |
+      时间已经很晚了。你站起身，准备离开——
+
+  - type: dialogue
+    character: ql
+    emotion: 慌张
+    text: |
+      【慌张】等、等等！
+      【慌张】再……再陪我一会儿，好不好？就一会儿！
+
+  # v2.10：DDLC Act 2 rigged_choice 对应物。选项出现拍先响故障音并震屏，
+  # 随后真实系统鼠标按原版 30Hz、9:1 插值被拖向最下方答案；只移动、不代点。
+  - type: sound
+    soundPath: 'glitch2.ogg'
+
+  - type: background_effect
+    effect: 'Shake'
+    duration: 0.5
+
+  - type: force_choice
+    forced: 再陪她一会儿
+    options:
+      - text: 今天真的该走了
+        actions:
+          - type: add_line
+            content: 今天真的该走了
+          - type: set_var
+            content: 'stayed = false'
+      - text: 松开鼠标，我要离开
+        actions:
+          - type: add_line
+            content: 松开鼠标，我要离开
+          - type: set_var
+            content: 'stayed = false'
+      - text: 再陪她一会儿
+        actions:
+          - type: add_line
+            content: 再陪她一会儿
+          - type: set_var
+            content: 'stayed = true'
+
+  - type: console_window
+    style: warning
+    title: '别⃞走⃟'
+    text: |
+      别走。别走。别走。
+      光标选择是自愿的。
+      你的选择已被记录。
+    count: 2
+    interval: 0.25
+    lifetime: 3.0
+
+
+  - type: narration
+    text: |
+      不管你原本准备选哪一项，光标都没有把确认权交给你。
+      它自己滑向了同一个答案——像有一只看不见的手，覆在你的手上。
+      那不是钦灵的手。钦灵自己也吓到了。
+
+  - type: dialogue
+    character: ql
+    emotion: 惊讶
+    text: |
+      【惊讶】刚才……你的手……
+      【惊讶】不是我做的！真的不是我！是台本——台本自己在动！
+
+  # 她的乱码残影更明显的一次插入（红字场景 3/5：乱码悬停期间界面渗血）
+  - type: background_effect
+    effect: 'Invert'
+    duration: 0.2
+
+  - type: sound
+    soundPath: 'eyes.ogg'
+
+  - type: background_effect
+    effect: 'BloodUI'
+
+  - type: narration
+    text: |
+      别⃞相⃟信⃗台⃘本⃙。
+      它⃚把⃝我⃞写⃟丢⃗了⃘。
+
+  - type: narration
+    text: |
+      那行乱码悬在画面中央，停了两秒。
+      钦灵盯着它，脸色惨白。
+
+  - type: background_effect
+    effect: 'none'
+
+  - type: dialogue
+    character: ql
+    emotion: 害怕
+    text: |
+      【害怕】新人……你也看到了，对吧？
+      【害怕】这不是我的幻觉。这个剧本里，真的有"别人"。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a2_poem3'

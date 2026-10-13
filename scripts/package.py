@@ -4,7 +4,8 @@ root = pathlib.Path(__file__).resolve().parent.parent
 repository = os.environ.get('DLC_REPOSITORY', 'sdfsfsk/LingChat-DLC')
 project = json.loads((root / 'package.json').read_text(encoding='utf-8'))
 tag = os.environ.get('DLC_RELEASE_TAG', 'v' + project['version'])
-prior_path = root / 'catalog.json'
+prior_path = root / 'catalog-v2.json'
+if not prior_path.exists(): prior_path = root / 'catalog.json'
 prior = json.loads(prior_path.read_text(encoding='utf-8')) if prior_path.exists() else {'packages': []}
 entries = []
 for package in sorted((root / 'packages').iterdir()):
@@ -25,11 +26,13 @@ for package in sorted((root / 'packages').iterdir()):
     blob = archive.read_bytes()
     entries.append({ 'id': manifest['id'], 'name': manifest['name'], 'description': manifest['description'],
         'version': manifest['version'], 'url': f'https://github.com/{repository}/releases/download/{tag}/{filename}',
-        'sha256': hashlib.sha256(blob).hexdigest(), 'size': len(blob), 'api_version': 1 })
-catalog = {'schema_version': 1, 'packages': entries}
+        'sha256': hashlib.sha256(blob).hexdigest(), 'size': len(blob), 'api_version': 1, 'kind': 'story' if manifest.get('story_api_version') else 'game' })
+catalog = {'schema_version': 2, 'packages': entries}
 for entry in entries:
     old = next((p for p in prior['packages'] if p['id'] == entry['id']), None)
     if old and old['version'] == entry['version'] and old['sha256'] != entry['sha256']:
         raise SystemExit(f"Package {entry['id']} changed without a version bump; published versions are immutable")
-(root / 'catalog.json').write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
+(root / 'catalog-v2.json').write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
+legacy = {'schema_version': 1, 'packages': [{k: v for k,v in e.items() if k != 'kind'} for e in entries if e['kind'] == 'game']}
+(root / 'catalog.json').write_text(json.dumps(legacy, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 print(json.dumps(catalog, ensure_ascii=False, indent=2))

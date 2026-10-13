@@ -1,0 +1,48 @@
+name: 4-0C 迟到的删除
+
+# 玩家先在 Act3 选择留下、后又在主菜单删除 MAIN.chr：文件状态优先于旧选择，
+# 但明确告诉玩家发生了状态迁移，不静默改写。
+events:
+  - type: background_effect
+    effect: Blackout
+
+  - type: music
+    musicPath: none
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > stored ending: loop
+      > external marker: MAIN.chr missing
+      > later deletion supersedes containment choice
+
+  - type: narration
+    text: |
+      你确实说过要把她留下。
+      可是在那以后，MAIN.chr 还是从角色目录里消失了。
+      房间承认了这个迟到的选择。
+
+  - type: character_file
+    action: ensure
+    file: ql.chr
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'last_ending = release'
+          - type: set_var
+            content: 'current_act = 4'
+
+  - type: main_menu_effect
+    theme: ghost
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a4_main'

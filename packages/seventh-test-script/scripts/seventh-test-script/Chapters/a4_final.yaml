@@ -1,0 +1,11 @@
+name: 4-3 结局分流
+
+# 先按 Act3 的结果拆章，避免 loop 线误播放 release 线的绝笔信/钦灵结局。
+events:
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: last_ending == release
+        next: 'a4_final_release'
+      - default: true
+        next: 'a4_final_loop'

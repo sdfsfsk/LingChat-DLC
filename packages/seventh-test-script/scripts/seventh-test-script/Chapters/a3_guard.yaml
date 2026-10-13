@@ -1,0 +1,17 @@
+name: 3-0 房间完整性检查
+
+# 每次进入 Act3 都读取外部标记。若玩家在主菜单或上次退出后删除 MAIN.chr，
+# 不会重新生成她，而是直接走“离线删除已被检测”分支。
+events:
+  - type: character_file
+    action: exists
+    file: MAIN.chr
+    resultVar: main_file_exists
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: main_file_exists == false
+        next: 'a3_missing'
+      - default: true
+        next: 'a3_space'

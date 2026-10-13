@@ -1,0 +1,129 @@
+name: 3-3B 永远
+
+# Act3 留下线：玩家拒绝删除她。
+# 她笑了——灿烂得让人心里发毛（v1 end_loop 的继承）。循环标记 last_ending = loop。
+
+events:
+  - type: background_effect
+    effect: 'Veins+BloodDrip'
+
+  - type: narration
+    text: |
+      你摇了摇头。
+      她愣住了。几秒之后，她笑了。
+      你见过她很多次笑——但这一次，灿烂得让人心里发毛。
+
+  - type: voice_shift
+    rate: 0.8
+    pitch: -3
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】真的吗？！真的真的吗？！
+      【高兴】你舍不得我！你舍不得我对不对！
+      【高兴】那说好了哦。永远，永远哦——
+
+  - type: narration
+    text: |
+      她扑过来抱住你。
+      她的力气大得不像一个角色该有的力气。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 心动
+    text: |
+      【心动】钦灵前辈？她就在这里陪我呀，哪里都不会去的。
+      【心动】你也一样。我们都一样。
+      【心动】——第 七 次，见。
+
+  # 你的对话框自己动了一下：这行字不是你打的（DDLC 菜单劫持的台词级对应）
+  - type: player
+    text: 我愿意。我想永远留在这里。
+
+  - type: background_effect
+    effect: 'Invert'
+    duration: 0.18
+
+  - type: narration
+    text: |
+      ——这句话，不是你打的。
+      它就这样躺在你的对话框里，像你亲手敲下的一样。
+
+  # 世界"咔"地倒回（Glitch + 白天教室一闪）
+  - type: sound
+    soundPath: 'glitch2.ogg'
+
+  - type: background_effect
+    effect: 'Glitch'
+    duration: 0.5
+
+  - type: background
+    imagePath: '白天-崩坏2.webp'
+    transition: 0.1
+
+  # 世界倒回"正常"：特效也一并清空——窗口标题随之自动复原（干净的假象比一直乱码更瘆人）
+  - type: background_effect
+    effect: 'BloodUI+UiCorrupt'
+
+  - type: music
+    musicPath: '2g.ogg'
+    playbackSpeed: 1.0
+
+  - type: narration
+    text: |
+      教室被强行加载回来。窗帘卡在墙外，桌子的影子朝向屏幕。
+      黑板仍写着第一天的日期，后面却堆着七层相同的笔画。
+      重建没有成功。它开始直接重复失败的结果。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】呀，%player%，你又回来啦。
+      【高兴】这一次，我们要好好的、慢慢地玩哦。
+      【高兴】反正——我们有的是时间。
+
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: background_effect
+    effect: 'Blackout'
+
+  - type: sound
+    soundPath: 'giggle.ogg'
+
+  - type: wait
+    seconds: 2.0
+
+  - type: narration
+    text: |
+      ——《第七个测试剧本》 第三周目 完——
+      （结局：永远的第七个）
+
+  - type: background_effect
+    effect: 'BloodUI+UiCorrupt'
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: music
+    musicPath: none
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'last_ending = loop'
+          - type: set_var
+            content: 'current_act = 4'
+
+  - type: main_menu_effect
+    theme: blood
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

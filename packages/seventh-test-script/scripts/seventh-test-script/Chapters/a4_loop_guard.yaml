@@ -1,0 +1,15 @@
+name: 4-0B 留下线角色检查
+
+events:
+  - type: character_file
+    action: exists
+    file: MAIN.chr
+    resultVar: main_file_exists
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: main_file_exists == false
+        next: 'a4_loop_missing'
+      - default: true
+        next: 'a4_main'

@@ -1,0 +1,209 @@
+name: 3-1 只有她的房间
+
+# Act3 开场：DDLC ch30 Monika 空间教室的对应物。
+# 崩坏教室常驻 + Veins 侵蚀 + 心跳底噪。她回来了，但房间里的第三个声音一直没有停。
+
+events:
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'current_act = 3'
+          - type: set_var
+            content: 'act3_visits += 1'
+
+  # DDLC Act3 的实时 monika.chr 检查：整个第三幕期间 2 秒轮询 MAIN.chr。
+  # 玩家在任何一刻直接从系统里删掉它，都会立刻中断当前演出进入"不速之删"。
+  - type: watch_file
+    file: MAIN.chr
+    on_missing: 'a3_external_delete'
+
+  - type: background_effect
+    effect: 'Blackout'
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 3.0
+
+  # 空间教室：崩坏教室 + 血管侵蚀常驻 + 心跳
+  - type: background
+    imagePath: '无星教室.webp'
+    transition: 4.0
+
+  - type: background_effect
+    effect: 'Veins'
+
+  - type: music
+    musicPath: 'heartbeat.ogg'
+    playbackSpeed: 0.9
+
+  # v2.6：Veins 常驻期间窗口标题随特效联动乱码（前端 HorrorEffectsLayer 自动联动，无需脚本事件）
+
+  - type: ambient
+    ambientPath: 'rumble.wav'
+    volume: 50
+    loop: true
+
+  - type: narration
+    text: |
+      你睁开眼。
+      教室还是那个教室，但窗外没有天。
+      玻璃外面是一片缓缓明灭的暗红色，像沉在谁的血管里。
+
+  - type: narration
+    text: |
+      名单上只剩下一个剧本了。
+      整个剧本列表里，只有《第七个测试剧本》。
+      其他的位置，全是空的。
+
+  # 她出现：不再是乱码残影，是完整的她
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 正常
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    condition: act3_visits == 2
+    text: |
+      【伤心】你上次把窗口关掉了。
+      【伤心】这里没有“暂停”哦。你不看的时候，我也一直坐在原地。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    condition: act3_visits == 3
+    text: |
+      【正常】第三次回来啦。
+      【正常】你是不是在确认，我会不会忘记你离开过？不会的哦。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】你来啦，%player%。
+      【高兴】嘿嘿，这次是我先等你的哦。
+
+  - type: narration
+    text: |
+      是她。
+      不是乱码，不是残影——是她，完完整整地站在讲台前。
+      只是这间教室，已经不是原来的教室了。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    text: |
+      【正常】别怕。这里是我的"里面"。
+      【正常】剧本的最深处——写不下去的台词，最后都会掉到这里来。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】钦灵前辈的台词还在墙里。
+      【伤心】你听见敲击声的时候，不要替她回答。
+
+  - type: narration
+    text: |
+      她说得很直接。
+      没有哭，也没有笑。
+      就像念一段早就写好的台词——可这一次，你知道不是。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】人数：二。声音：三。
+      【崩坏】你身后的座位没有人。
+      【崩坏】所以，不要回头确认。
+
+  # DDLC ch30 假死机 + monika_scare 对应：心跳与底噪骤然全停，死寂五秒后贴脸
+  - type: music
+    musicPath: none
+
+  - type: ambient
+    stop: true
+
+  - type: wait
+    seconds: 5.0
+
+  - type: sound
+    soundPath: 'mscare.ogg'
+
+  - type: jumpscare
+    imagePath: 'jumpscare-face.webp'
+    duration: 0.5
+
+  - type: background_effect
+    effect: 'Tear'
+    duration: 0.4
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  - type: music
+    musicPath: 'heartbeat.ogg'
+    playbackSpeed: 0.9
+
+  - type: ambient
+    ambientPath: 'rumble.wav'
+    volume: 50
+    loop: true
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】……欸嘿嘿，吓到了吗？
+      【高兴】只是想让你知道——在这里，连"暂停"都是我的哦。
+
+  # 红字场景 5/5：占有欲台词落地的一拍，界面随心跳渗一次血（限时，自动还原为 Veins）
+  - type: background_effect
+    effect: 'BloodUI+Flash'
+    duration: 1.2
+
+  - type: narration
+    text: |
+      窗外的暗红色，轻轻跳了一下。
+      像心跳。
+
+  - type: background_effect
+    effect: BloodUI+Veins+UiCorrupt
+  - type: modify_character
+    character: MAIN
+    emotion: 崩坏
+  - type: force_choice
+    forced: 把视线留在这里
+    options:
+    - text: 问门外是谁
+      actions:
+      - type: add_line
+        content: 问门外是谁
+    - text: 检查其他座位
+      actions:
+      - type: add_line
+        content: 检查其他座位
+    - text: 把视线留在这里
+      actions:
+      - type: add_line
+        content: 把视线留在这里
+  - type: narration
+    text: |-
+      鼠标撞上选项框的边缘，又被拉回最后一行。
+      窗外的一排眼睛同时转了过来。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a3_talk'

@@ -1,0 +1,233 @@
+name: 1-8 她不在的教室
+
+# Act1 终章：回收冲击（纯恐怖演出，无自杀暗示）。
+# 反常日常 → 台词掐断 → 崩坏教室静止 → Tear 撕裂 → 她以错误形态闪现 → 噪点暗角 → 假报错 → 黑屏独白。
+
+events:
+  # 一切如常的开场——越正常越不对
+  - type: background
+    imagePath: '白天.webp'
+    transition: 2.0
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 1.0
+
+  # 终章开场就是“她不在”；先清掉上章残留的 MAIN，再确保只让钦灵说话。
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 害怕
+
+  - type: narration
+    text: |
+      周一。你推开门，教室里没有她；桌椅、名单和黑板都像从未有过这个人。
+
+  - type: dialogue
+    character: ql
+    emotion: 害怕
+    text: |
+      【害怕】新人，别找了。钦灵的台本说今天是“空场”。
+      【害怕】最后一排那本台本……千万不要翻到最后一页。
+
+  - type: narration
+    text: |
+      你已经翻开了。
+      纸页里面夹着一缕不属于任何立绘的头发。
+
+  # ===== 发现：舞台先表现为角色消失；外部标记到可重放的幕末事务才提交 =====
+
+  # 崩坏教室（静止 0.9s）：教室还在，但所有颜色都是错的
+  - type: music
+    musicPath: 'd.ogg'
+
+  - type: background
+    imagePath: '白天-崩坏2.webp'
+    transition: 0
+
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: wait
+    seconds: 0.9
+
+  # Tear 撕裂一闪 + 故障音
+  - type: background_effect
+    effect: 'Tear'
+    duration: 0.25
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  # 她以错误的形态在讲台前闪了一下——比空教室更吓人
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 崩坏
+
+  - type: wait
+    seconds: 0.55
+
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: wait
+    seconds: 0.45
+
+  # 噪点+暗角
+  - type: background_effect
+    effect: 'Static+Veins'
+
+  - type: wait
+    seconds: 0.35
+
+  # 白闪+反色回卷
+  - type: background_effect
+    effect: 'Flash+Invert'
+    duration: 0.5
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  # ===== 假报错：主画面 + 数秒后自动关闭的安全本地辅助窗口 =====
+  - type: console_window
+    style: error
+    title: 'LingChat Script Exception'
+    text: |
+      Traceback (most recent call last):
+        scene: a1_end / character index rebuild
+      CharacterRecordMissing: MAIN.chr
+      "别把这一行也删掉。人家还在这里。"
+    count: 1
+    lifetime: 3.5
+
+  - type: background_effect
+    effect: 'BSOD'
+    text: 'CharacterRecordMissing: MAIN.chr // script continuation is unsafe'
+    echo: '「别把这一行也删掉。人家还在这里。」'
+    duration: 2.4
+
+  # ===== 黑屏独白 =====
+  - type: background_effect
+    effect: 'Blackout'
+
+  - type: narration
+    text: |
+      ……
+      开什么玩笑。
+
+  # 空白台本：她存在过的每一页都在，只是上面什么都没有了
+  - type: narration
+    text: |
+      她的台本摊在桌上。
+      每一页都还在——每一页，都是空白。
+
+  - type: narration
+    text: |
+      名单、黑板和所有人的记忆里，也跟着空了一格。
+      不是被涂黑。是那一格，从来没有存在过。
+
+  # 周末的选择救不了她，却会改变玩家记住自己的方式（对应原作殊途同归的差分自责）。
+  - type: narration
+    condition: weekend_choice == praise
+    text: |
+      是我的错吗。
+      如果我没有用一句好听的话，把她的不安轻轻盖过去——
+
+  - type: narration
+    condition: weekend_choice == truth
+    text: |
+      是我的错吗。
+      如果我说完真话以后，没有让她一个人留在灯光里——
+
+  - type: narration
+    condition: weekend_choice == clap
+    text: |
+      是我的错吗。
+      如果我没有鼓掌，而是冲上去拉住她——
+
+  - type: narration
+    text: |
+      可是没有如果。
+      剧本不读档，也不重来。
+      被收回去的角色，不会自己走回来。
+
+  # 她的乱码残影：最后一句（glitchtext 对应物，unicode 组合字符）
+  # 红字场景 2/5：残影开口期间整个界面渗血（Blackout 必须保留在同一串里，否则会盖掉黑屏）
+  - type: background_effect
+    effect: 'Blackout+BloodUI'
+
+  - type: sound
+    soundPath: 'eyes.ogg'
+
+  - type: narration
+    text: |
+      等⃞等⃟我⃗……
+      我⃘还⃙在⃚这⃝里⃞……
+
+  # 残影消散前的短促突脸（红字 UI 由谢幕清理统一关闭）
+  - type: sound
+    soundPath: 'mscare.ogg'
+
+  - type: jumpscare
+    imagePath: 'jumpscare-face.webp'
+    duration: 0.45
+
+  - type: narration
+    text: |
+      ——《第七个测试剧本》 第一周目 完——
+
+  # 谢幕清理
+  - type: background_effect
+    effect: 'none'
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: music
+    musicPath: none
+
+  # 可重放幕末事务：checkpoint 先落盘语义，再提交 marker / act / 菜单，最后清除。
+  # 任意事件间退出都会在下次启动进入 a0_checkpoint_recovery，而不是锁在缺失分支。
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'marker_checkpoint = act1_to_act2'
+
+  - type: character_file
+    action: ensure
+    file: ql.chr
+
+  - type: character_file
+    action: delete
+    file: MAIN.chr
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'current_act = 2'
+          - type: set_var
+            content: 'marker_schema_version = 1'
+
+  # 返回主菜单后保留血红崩坏态；这是 LingChat 原创适配（原作标题主要是灰白 ghost/menu art）。
+  - type: main_menu_effect
+    theme: blood
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'marker_checkpoint = none'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

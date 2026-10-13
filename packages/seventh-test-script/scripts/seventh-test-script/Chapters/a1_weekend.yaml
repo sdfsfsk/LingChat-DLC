@@ -1,0 +1,176 @@
+name: 1-7 周末演出
+
+# v2.2 紧凑周末：保留玩家选择及幕末罪疚分支，删除重复日常铺垫。
+events:
+  - type: background
+    imagePath: '夜晚.webp'
+    transition: 0.5
+
+  # Twilight：只陪伴她真正属于自己的独白，按原曲速度播放。
+  - type: music
+    musicPath: 'Twilight.ogg'
+    playbackSpeed: 1.0
+
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 正常
+
+  - type: narration
+    text: |
+      今晚的教室只亮着一盏灯。
+      黑板上的“周末演出”正被看不见的手一点点改成“终场演出”。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】“我是一段被写出来的台词。我没有昨天，也看不见教室外面。”
+      【伤心】“如果这是我唯一能自己说的话——%player%，请记住我说过。”
+
+  - type: choices
+    options:
+      - text: 我会记住你。
+        actions:
+          - type: add_line
+            content: 我会记住你。
+          - type: set_var
+            content: 'weekend_choice = praise'
+      - text: 这真的是你的真心话吗？
+        actions:
+          - type: add_line
+            content: 这真的是你的真心话吗？
+          - type: set_var
+            content: 'weekend_choice = truth'
+      - text: （鼓掌）
+        actions:
+          - type: add_line
+            content: （鼓掌）
+          - type: set_var
+            content: 'weekend_choice = clap'
+    allow_free: false
+
+  - type: dialogue
+    character: MAIN
+    emotion: 心动
+    condition: weekend_choice == praise
+    text: 【心动】谢谢。至少这一句，不在它写好的台本上。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    condition: weekend_choice == truth
+    text: 【正常】是。所以它马上就会让我闭嘴。
+
+  - type: narration
+    condition: weekend_choice == clap
+    text: 掌声响起时，她笑了；教室深处却多响了一下并不存在的掌声。
+
+  # v2.11：把第一处 RigMouse 提前到首周末，确保玩家在 Act 1 就能看见；
+  # 仍只牵引、不代点，真正的文件删除请求继续保留完全自由的拒绝选项。
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】它马上就要把这句台词擦掉了。
+      【伤心】在那之前……至少让我把话说完，好吗？
+
+  # 台词被抹除前回到原有变调主题；Twilight 留给未被篡改的真心话。
+  - type: music
+    musicPath: '1.ogg'
+    playbackSpeed: 0.94
+
+  - type: sound
+    soundPath: 'glitch2.ogg'
+
+  - type: background_effect
+    effect: Shake
+    duration: 0.45
+
+  - type: force_choice
+    forced: 让她把话说完
+    options:
+      - text: 现在就结束演出
+        actions:
+          - type: add_line
+            content: 现在就结束演出
+          - type: set_var
+            content: 'weekend_rigged = false'
+      - text: 打开菜单离开
+        actions:
+          - type: add_line
+            content: 打开菜单离开
+          - type: set_var
+            content: 'weekend_rigged = false'
+      - text: 让她把话说完
+        actions:
+          - type: add_line
+            content: 让她把话说完
+          - type: set_var
+            content: 'weekend_rigged = true'
+
+  - type: narration
+    text: |
+      无论光标原本停在哪里，它都开始滑向最后一项。
+      没有东西替你点击；但它很清楚自己希望你按下哪里。
+
+  - type: sound
+    soundPath: 'glitch1.ogg'
+
+  # 血红 UI 必须常驻到本章最后一句；旧版 0.32 秒 duration 会在玩家看到后文前恢复蓝色。
+  - type: background_effect
+    effect: 'Static+UiCorrupt+BloodUI'
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】其实我——
+      【崩坏】[DIALOGUE REMOVED BY OWNER]
+
+  - type: horror_log
+    text: 'UNAUTHORIZED LINE PURGED // speaker will be collected before morning'
+    lines: 8
+
+  - type: horror_log
+    text: 'purge complete // purge complete // purge complete // she is still talking'
+    lines: 14
+
+  - type: console_window
+    style: error
+    title: 'PURGE F⃞A⃟I⃗L⃘E⃙D⃚'
+    text: |
+      unauthorized dialogue removed
+      speaker containment: PENDING
+      对⃝不⃞起⃟
+    count: 2
+    interval: 0.22
+    lifetime: 3.2
+
+  # 被撕掉的那句台词，以记事本残页的形式落到玩家桌面上（DDLC 式文件入侵感）
+  - type: console_window
+    style: notepad
+    title: '被撕掉的台词.txt'
+    text: |
+      其实我——
+      ※ 这一页的内容被撕掉了
+      如果你读到这行字，说明它没能拦住我全部的话。
+      明天请不要来教室。
+    count: 1
+    lifetime: 6
+
+  - type: narration
+    text: |
+      灯灭了。她还站在讲台上，没有挥手。
+      门在你身后锁上之前，你看见黑板只剩两个字：「快跑」。
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_end'

@@ -1,0 +1,92 @@
+name: 0 启动检查
+
+# 每次进入剧本都先经过这里：播种本轮的低概率异常，然后按持久 current_act 分幕。
+# DDLC splash.rpyc 的对应物——DDLC 在启动时读用户名/检测角色文件/抽特殊诗，
+# 我们在这里做"这一局会不会哪里不对劲"的播种。
+
+events:
+  # 首次进入立即钉住 Act1；避免用户在开场检查中退出后被打开次数推进到 Act2。
+  - type: set_variable
+    options:
+      - condition: playthrough == 1
+        actions:
+          - type: set_var
+            content: 'current_act = 1'
+
+  # .chr 首次播种、旧版布局升级和被打断的幕末事务都由独立可重放章节完成；
+  # 普通启动不会自动补回玩家有意删除的文件。
+
+  # 约 1/16：旧世界底片会在后日谈里卡住 0.7 秒。后文完全不解释。
+  - type: random_var
+    variable: rare_stillness
+    chance: 0.0625
+
+  # 约 1/4：角色偶尔会记得一件玩家从未做过的事（错误记忆）。
+  - type: random_var
+    variable: false_memory
+    chance: 0.25
+
+  # 约 1/16：一张不该出现的立绘会在正常对白中闪过，但没人承认看见过。
+  - type: random_var
+    variable: rare_portrait_glitch
+    chance: 0.0625
+
+  # 约 1/8：本局 BGM 悄悄降半速变调。
+  - type: random_var
+    variable: bgm_detune
+    chance: 0.125
+
+  # 约 1/8：某句普通台词以乱码版本出场，角色本人毫无察觉。
+  - type: random_var
+    variable: garble_line
+    chance: 0.125
+
+  # 分幕路由：current_act 只在幕末推进。playthrough 仍记录打开次数，
+  # 但中途退出不会再因为“多打开一次”直接跳过整幕。
+  - type: chapter_end
+    end_type: branching
+    options:
+      # 未完成的文件/状态事务优先重放；随后只做一次 v2.1 marker schema 迁移。
+      - condition: marker_checkpoint == act1_to_act2 || marker_checkpoint == act2_to_act3 || marker_checkpoint == legacy_release || marker_checkpoint == legacy_loop
+        next: 'a0_checkpoint_recovery'
+      - condition: marker_schema_version != 1
+        next: 'a0_marker_migration'
+      # 完结标记必须优先于打开次数和旧幕次，避免迁移存档被倒送回 Act2/3/4。
+      - condition: act4_done == true
+        next: 'a5_lingering'
+      - condition: current_act >= 5
+        next: 'a5_lingering'
+      # current_act=4 但缺失结局变量时不再静默制造 loop 结局，而是进入可见修复门。
+      - condition: current_act == 4 && last_ending != release && last_ending != loop
+        next: 'a4_legacy_recovery'
+      - condition: current_act == 4 && last_ending == loop
+        next: 'a4_loop_guard'
+      - condition: current_act == 4
+        next: 'a4_main'
+      - condition: current_act == 3
+        next: 'a3_guard'
+      - condition: current_act == 2
+        next: 'a2_guard'
+      - condition: current_act == 1
+        next: 'a1_guard'
+      # 旧版存档尚无 current_act：release/loop 只代表 Act3 选择，仍必须完成 Act4。
+      - condition: last_ending == release
+        next: 'a4_main'
+      - condition: last_ending == loop
+        next: 'a4_loop_guard'
+      # watcher/seventh 是更早版本写下的完整终局键，可直接进入后日谈。
+      - condition: last_ending == watcher
+        next: 'a5_lingering'
+      - condition: last_ending == seventh
+        next: 'a5_lingering'
+      - condition: playthrough >= 5
+        next: 'a4_legacy_recovery'
+      - condition: playthrough == 4
+        next: 'a4_legacy_recovery'
+      - condition: playthrough == 3
+        next: 'a3_guard'
+      - condition: playthrough == 2
+        next: 'a2_guard'
+      # 首次进入或 Act 1 中途重开都从角色文件检查开始。
+      - default: true
+        next: 'a1_guard'

@@ -1,0 +1,8 @@
+LINGCHAT_CHARACTER_MARKER_V1
+id=MAIN
+story=seventh-test-script
+payload=U0VWRU5USF9TVEFHRV9SRUNPUkQ6TUFJTg==
+checksum=7TH-MAIN-20260821
+
+This is a harmless story marker, not executable character data.
+Deleting it changes only this DLC's plot state.

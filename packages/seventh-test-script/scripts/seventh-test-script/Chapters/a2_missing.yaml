@@ -1,0 +1,42 @@
+name: 2-0B 钦灵缺失
+
+events:
+  - type: music
+    musicPath: none
+
+  - type: background_effect
+    effect: Blackout
+
+  - type: sound
+    soundPath: 'glitch3.ogg'
+
+  - type: main_menu_effect
+    theme: ghost
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > loading required role: ql
+      > characters/standalone/第七个测试剧本/ql.chr ........ NOT FOUND
+      > refusing to render dialogue for a missing record
+
+  - type: narration
+    text: |
+      第二周目的教室开了门，里面却没有人。
+      讲台上只剩一张写到一半的值日表；“钦灵”两个字像被橡皮擦穿了纸。
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      角色标记目录已经打开。
+      你可以把打包模板复制回来，或在主菜单点击「重置记忆」自动恢复两个标记。
+
+  - type: character_file
+    action: open_folder
+
+  - type: background_effect
+    effect: none
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'end'

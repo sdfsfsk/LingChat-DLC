@@ -1,0 +1,111 @@
+name: 2-2 腐化的诗
+
+# Act2 写诗①：她的贴纸已经消失，但词库暂时仍正常；第二局直接进入腐化。
+# 钦灵读诗时的黑化开始渗出来，结束后固定投放第一张特殊诗。
+
+events:
+  - type: narration
+    text: |
+      笔记本推到你面前。
+      词还是那些词。可左页空了一块——原本属于她的贴纸不见了。
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  # 第一局不生成乱码词；act2 模式隐藏“她”的贴纸，只比较钦灵/空白两轴
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: act2
+    glitch: false
+
+  # 第一局仍尊重玩家的选择，让玩家先确认旧规则还在生效。
+  - type: narration
+    condition: poem_tone == script
+    text: 钦灵的小贴纸跳得最多。至少这一局，判定还和从前一样。
+
+  - type: narration
+    condition: poem_tone == void
+    text: 没有任何贴纸为这首诗跳起来。空着的位置，却轻轻抖了一下。
+
+  # 钦灵读诗：开始还说人话，说着说着就不对了
+  - type: dialogue
+    character: ql
+    emotion: 认真
+    text: |
+      【认真】唔，我看看新人今天写的……
+      【认真】嗯，不错哦，比昨天有进步——
+
+  - type: background_effect
+    effect: 'Static'
+    duration: 0.2
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】……词还是那些词。反正到最后，都是要被删掉的。
+
+  - type: narration
+    text: |
+      钦灵的声音平了下来。
+      她抬起头，冲你笑了一下——笑容还是原来的笑容，眼睛却没有在笑。
+
+  - type: dialogue
+    character: ql
+    emotion: 惊讶
+    text: |
+      【惊讶】……啊！对不起对不起，我刚刚又走神了！
+      【惊讶】我这几天老是这样，说着说着就……说到别的地方去了。
+
+  - type: choices
+    options:
+      - text: 前辈，你真的没事吗？
+        actions:
+          - type: add_line
+            content: 前辈，你真的没事吗？
+          - type: set_var
+            content: 'a2_care = true'
+      - text: 诗我拿走了。今天先到这里吧。
+        actions:
+          - type: add_line
+            content: 诗我拿走了。今天先到这里吧。
+          - type: set_var
+            content: 'a2_care = false'
+    allow_free: false
+
+  - type: dialogue
+    character: ql
+    emotion: 害羞
+    condition: a2_care == true
+    text: |
+      【害羞】……嗯。没事的。
+      【害羞】钦灵可是前辈哦，前辈是不会坏掉的。
+      【害羞】……坏掉的角色，是会被换掉的。
+
+  - type: narration
+    condition: a2_care != true
+    text: |
+      你把诗收了起来。
+      钦灵没有拦你。她坐在原地，看着你收拾东西。
+      那眼神像是在说——别走。
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'special_return = day2'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'special_poem_a2'

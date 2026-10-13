@@ -1,0 +1,17 @@
+name: 2-0A 钦灵文件检查
+
+# Act2 需要 ql.chr 才会构造钦灵。手动删除或在终章中途退出后，不让不存在的
+# 角色照常演完整幕；“重置记忆”是始终可用的恢复入口。
+events:
+  - type: character_file
+    action: exists
+    file: ql.chr
+    resultVar: ql_file_exists
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: ql_file_exists == false
+        next: 'a2_missing'
+      - default: true
+        next: 'a2_boot'

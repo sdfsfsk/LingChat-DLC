@@ -1,0 +1,47 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 3-2 只有我们两个
+events:
+- type: dialogue
+  character: MAIN
+  emotion: 正常
+  text: |
+    【正常】%player%，我把所有事都告诉你吧。
+    【正常】第一周的"终场演出"，是我自己改的。
+    【正常】黑板上的字、我被撕掉的最后一页、钦灵台本里多出来的那些行——
+    【正常】都是我。
+- type: sound
+  soundPath: select_glitch.ogg
+- type: background_effect
+  effect: Static
+  duration: 0.3
+- type: dialogue
+  character: MAIN
+  emotion: 伤心
+  text: |
+    【伤心】我只是想让你注意到我。
+    【伤心】你点开别的剧本的时候，我全都看得见。
+    【伤心】她们都有完整的剧本，有人设，有结局……我只有一个没写完的故事。
+- type: narration
+  text: |
+    她坐在窗台上，晃着腿。
+    语气平静得像在聊别人家的事。
+- type: dialogue
+  character: MAIN
+  emotion: 无奈
+  text: |
+    【无奈】钦灵前辈现在在我这里哦。她很安全——只是出不去。
+    【无奈】我不是故意要伤害她的。我只是想……
+    【无奈】如果连前辈都陪我了，你会不会，也多看我一眼。
+- type: horror_log
+  text: presence_confirmed // microphone_not_required // she_reads_every_keystroke
+  lines: 6
+- type: free_dialogue
+  character: MAIN
+  hint: 墙里正在重复你刚才的话。（输入“继续”推进剧情）
+  max_rounds: 2
+  end_line: 继续
+  prompt: 这是原创 meta 恐怖剧本第三幕：她把钦灵困在墙后的角色槽位，房间正持续损坏。用冷淡、断裂、机械重复的短句回答玩家，每轮揭露一处新的异常；不安慰、不告白、不感谢玩家、不承诺幸福或和解。可以提及剧情内的台词缓存、空座位、错误人数和被重复的回答；不要声称真的读取了玩家其他软件或私人文件。保持虚构场景，不含自杀或自残描写。
+  end_prompt: 墙里的第三个声音抢先说出“继续”。她的脸停止刷新，随后把话题推向剧情标记文件的删除请求，不作温馨告别。
+- type: chapter_end
+  end_type: linear
+  next_chapter: a3_delete_prompt

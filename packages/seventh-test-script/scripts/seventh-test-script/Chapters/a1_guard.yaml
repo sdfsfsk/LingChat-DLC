@@ -1,0 +1,24 @@
+name: 0-1 角色文件检查
+
+# Act1 启动门：首次运行已在 a1_boot 播种 MAIN.chr；之后若玩家在外部删除它，
+# 就进入安全的早删结局，而不是启动一个已经不存在的角色。
+events:
+  - type: character_file
+    action: exists
+    file: MAIN.chr
+    resultVar: main_file_exists
+
+  - type: character_file
+    action: exists
+    file: ql.chr
+    resultVar: ql_file_exists
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: main_file_exists == false
+        next: 'a0_early_delete'
+      - condition: ql_file_exists == false
+        next: 'a0_ql_early_delete'
+      - default: true
+        next: 'a1_day1'

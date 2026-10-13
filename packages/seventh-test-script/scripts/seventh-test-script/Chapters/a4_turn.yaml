@@ -1,0 +1,63 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 4-2 输入接管
+events:
+- type: background_effect
+  effect: BloodUI+Veins+UiCorrupt
+- type: music
+  musicPath: heartbeat.ogg
+  playbackSpeed: 0.8
+- type: dialogue
+  character: ql
+  emotion: 崩坏1
+  text: |-
+    【崩坏1】部长权限已移交。
+    【崩坏1】不是移交给我。它只是借我的名字通过检查。
+  condition: last_ending == release
+- type: dialogue
+  character: MAIN
+  emotion: 崩坏
+  text: |-
+    【崩坏】你答应留下。记录里只有这一句。
+    【崩坏】后面的拒绝，被写进了同一行。
+  condition: last_ending == loop
+- type: horror_log
+  text: input owner changed // rejected answers map to the same branch
+  lines: 18
+- type: background_effect
+  effect: BloodUI+Tear+Static
+  duration: 0.7
+- type: narration
+  text: |-
+    三行回答一度各不相同。
+    你把指针移过去时，字却先一步变成了它要的答案。
+- type: force_choice
+  forced: 继续损坏的流程
+  options:
+  - text: 拒绝接管
+    actions:
+    - type: add_line
+      content: 拒绝接管
+  - text: 返回上一页
+    actions:
+    - type: add_line
+      content: 返回上一页
+  - text: 继续损坏的流程
+    actions:
+    - type: add_line
+      content: 继续损坏的流程
+- type: sound
+  soundPath: select_glitch.ogg
+- type: background_effect
+  effect: BloodUI+UiCorrupt+BloodDrip
+- type: narration
+  text: |-
+    「拒绝」被收进了确认记录。
+    你还没有读完，下一页就从角色的脸上翻了过去。
+- type: sound
+  soundPath: eyes.ogg
+- type: jumpscare
+  imagePath: ghost-ql-bw.webp
+  duration: 0.65
+- type: chapter_end
+  end_type: linear
+  next_chapter: a4_final

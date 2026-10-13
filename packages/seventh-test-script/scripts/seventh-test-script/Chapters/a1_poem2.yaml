@@ -1,0 +1,129 @@
+name: 1-4 第二首诗
+
+# Act1 写诗②+读诗。倾向继续累计。
+# 钦灵状态不对的第一个明确信号（她读诗时的走神）。
+
+events:
+  - type: narration
+    text: |
+      傍晚。笔记本又被推到你面前。
+      今天的词，好像比昨天沉一点。
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: normal
+    glitch: false
+
+  - type: set_variable
+    options:
+      - condition: poem_tone == warm
+        actions:
+          - type: set_var
+            content: 'warm_score += 1'
+      - condition: poem_tone == script
+        actions:
+          - type: set_var
+            content: 'script_score += 1'
+      - condition: poem_tone == void
+        actions:
+          - type: set_var
+            content: 'void_score += 1'
+
+  # 读诗反应：她的部分
+  - type: dialogue
+    character: MAIN
+    emotion: 心动
+    condition: poem_tone == warm
+    text: |
+      【心动】今天的诗也好温柔。
+      【心动】%player%，你写诗的时候，心里想着谁呢？
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    condition: poem_tone == script
+    text: |
+      【正常】你的诗越来越像"它"的口味了。
+      【正常】整齐、安静、一行都不多。像……打印出来的。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 担心
+    condition: poem_tone == void
+    text: |
+      【担心】今天的诗我读不懂。
+      【担心】字都认识，连在一起却像……什么都没有。空空的。
+
+  # 钦灵读诗走神：她的部分
+  - type: dialogue
+    character: ql
+    emotion: 认真
+    text: |
+      【认真】轮到我啦。唔——
+
+  - type: wait
+    seconds: 2.5
+
+  - type: narration
+    text: |
+      钦灵拿着你的诗，很久没有说话。
+      她的视线落在纸面上，又好像落在很远的地方。
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】……写得真好。
+      【正常】好到让我想起了第六个剧本的最后一页。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    text: |
+      【正常】前辈？你又在怀念那边啦。
+      【正常】那边的剧本已经发布了，你现在是我们这边的哦。
+
+  - type: dialogue
+    character: ql
+    emotion: 害羞
+    text: |
+      【害羞】知道啦知道啦！我这不是好好的在这儿嘛！
+      【害羞】明天见，新人！记得想我哦～
+
+  # 她目送钦灵离开，低声说了一句（玩家不该听到的话）
+  - type: background_effect
+    effect: 'none'
+
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】……前辈，你真的觉得自己"好好的"吗。
+      【伤心】你的台词表里，昨天多了十七行不是你写的东西。
+
+  - type: narration
+    text: |
+      她是对着空气说的。
+      她以为你已经不在了。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_day3'

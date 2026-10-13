@@ -1,6 +1,6 @@
 # LingChat DLC
 
-独立发布的 LingChat 小游戏内容仓库：**暮色节拍**（四键音游、MIDI 导入）与 **星灯远征**（七关横版跳跃射击）。游戏源码从 [LingChat PR #797](https://github.com/SlimeBoyOwO/LingChat/pull/797) 迁入，原提交为 `17a04a4078cabeb2e0663019edccf9741e03572c`；原项目作者及贡献者的版权和署名保留。
+独立发布的 LingChat 小游戏与剧本内容仓库：**暮色节拍**（四键音游、MIDI 导入）、**星灯远征**（七关横版跳跃射击）与 **[第七个测试剧本](packages/seventh-test-script/README.md)**（原生恐怖剧本）。游戏源码从 [LingChat PR #797](https://github.com/SlimeBoyOwO/LingChat/pull/797) 迁入，原提交为 `17a04a4078cabeb2e0663019edccf9741e03572c`；原项目作者及贡献者的版权和署名保留。
 
 需要支持 **Game DLC API v1** 的 LingChat。旧版 LingChat / 剧本 DLC 导入器不能直接运行这些包；宿主支持由配套 DLC PR 提供。
 
@@ -8,10 +8,10 @@
 
 1. 在支持 DLC 的 LingChat 中打开「设置 → 插件 / DLC → DLC」。
 2. 点击「同步目录」，程序会从内置的本仓库地址获取内容，无需填写链接。
-3. 下载并安装需要的游戏，再点击「启用」「开始」。也可从 [Releases](https://github.com/sdfsfsk/LingChat-DLC/releases) 下载 ZIP，使用「导入本地包」。
+3. 下载并安装需要的游戏，再点击「启用」。从「开始游戏 → 小游戏」进入游戏；剧本从「开始游戏 → 剧情模式」进入。也可从 [Releases](https://github.com/sdfsfsk/LingChat-DLC/releases) 下载 ZIP，使用「导入本地包」。
 4. 后续点击「同步目录」「更新已安装」。游戏内容单独更新，无需重编译 LingChat。
 
-`catalog.json` 中包含版本、下载地址、字节大小、SHA-256 与接口版本。同步仅刷新目录；安装/更新由玩家触发。先发布 Release 文件，再更新目录，避免目录指向不存在的下载。
+`catalog-v2.json` 区分小游戏与原生剧本；`catalog.json` 保持旧版游戏目录兼容。目录中包含版本、下载地址、字节大小、SHA-256 与接口版本。同步仅刷新目录；安装/更新由玩家触发。先发布 Release 文件，再更新目录，避免目录指向不存在的下载。
 
 游戏存档由宿主管理，位于其 `data/game_saves/<plugin-id>/<game-id>.json`，更新和卸载保留存档。旧内置版暮色节拍的导入 MIDI、音量和判定调校可通过卡片上的「迁移旧版数据」复制；请在第一次游玩 DLC 前迁移，已有 DLC 存档不会被覆盖，旧浏览器数据也不删除。
 
@@ -39,7 +39,7 @@ Node.js 22、pnpm 11.21 与 Python 3.11+；Python 只负责确定性 ZIP 和目�
 
 ## 发布
 
-修改相应包的 `manifest.toml` 版本后，手工运行 **Build DLC release** workflow，输入未使用过的 tag。流程构建、生成 ZIP 和 SHA-256、发布 GitHub Release，成功后提交 `catalog.json` 到 main。已发布的版本和下载文件应保持不变；修正内容请发新版本。
+修改相应包的 `manifest.toml` 版本后，手工运行 **Build DLC release** workflow，输入未使用过的 tag。流程构建、生成 ZIP 和 SHA-256、发布 GitHub Release，成功后提交两份目录到 main。已发布的版本和下载文件应保持不变；修正内容请发新版本。
 
 本机发布也可设置 `DLC_REPOSITORY`、`DLC_RELEASE_TAG` 后运行打包脚本；先上传 `dist/*.zip` 到同名 Release，再推送更新后的目录。
 
@@ -47,4 +47,6 @@ Node.js 22、pnpm 11.21 与 Python 3.11+；Python 只负责确定性 ZIP 和目�
 
 程序代码沿用 LingChat 的 **AGPL-3.0**（见 LICENSE），未将第三方素材重新授权为 AGPL。钦灵像素图的来源见 [素材记录](docs/minigames-twilight-assets.md)；《U.N.オーエンは彼女なのか？》及钢琴谱数据的作者、来源和独立使用条件见 [配乐来源](docs/minigames-twilight-midi.md)。包内保留上述文件和游戏内署名。
 
-触摸操作保留。浏览器中的手机尺寸测试与 Android/iOS 真机验证是不同验证范围；宿主多窗口模式要求受支持的平台版本，具体以宿主说明为准。
+触摸操作保留。浏览器中的手机尺寸测试与 Android/iOS 真机验证是不同验证范围；主窗口内嵌游戏目前面向桌面版；移动端嵌入支持需单独验证。
+
+原生剧本包声明 `story_api_version = 1` 与 `resources = ["scripts"]`，仅携带剧情与素材；不会获得 Python 插件或任意文件访问能力。按包保留独立许可证和素材署名，根目录 AGPL 不覆盖这些素材。

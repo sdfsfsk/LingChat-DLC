@@ -1,0 +1,99 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 4-3B 第七次递归
+events:
+- type: background_effect
+  effect: BloodUI+Veins+UiCorrupt
+- type: music
+  musicPath: heartbeat.ogg
+  playbackSpeed: 0.7
+- type: modify_character
+  character: MAIN
+  emotion: 崩坏
+- type: dialogue
+  character: MAIN
+  emotion: 崩坏
+  text: |-
+    【崩坏】再来一次。
+    【崩坏】再来一次。
+    【崩坏】再来一次。
+- type: narration
+  text: |-
+    她的脸每重复一句就向前错一格，身体却留在原地。
+    黑板上的「第七次」开始向四面复制，没有第八次的位置。
+- type: force_choice
+  forced: 继续第七次测试
+  options:
+  - text: 停止重复
+    actions:
+    - type: add_line
+      content: 停止重复
+  - text: 检查第一份记录
+    actions:
+    - type: add_line
+      content: 检查第一份记录
+  - text: 继续第七次测试
+    actions:
+    - type: add_line
+      content: 继续第七次测试
+- type: horror_log
+  text: recursive load // seventh -> seventh -> seventh // entry index overwritten
+  lines: 24
+- type: background_effect
+  effect: BloodUI+Tear+Static
+  duration: 0.8
+- type: sound
+  soundPath: glitch3.ogg
+- type: dialogue
+  character: MAIN
+  emotion: 崩坏
+  text: |-
+    【崩坏】继续。继——
+    【崩坏】[SPEAKER INDEX OUT OF RANGE]
+- type: modify_character
+  action: hide_character
+  character: MAIN
+- type: console_window
+  style: error
+  title: SCRIPT // RECURSION LIMIT
+  text: |-
+    entry point overwritten
+    restart target: invalid
+    SCRIPT_CORRUPTED
+  count: 1
+  lifetime: 4.0
+- type: wait
+  seconds: 1.3
+- type: sound
+  soundPath: mscare.ogg
+- type: jumpscare
+  imagePath: ghost-ql-bw.webp
+  duration: 0.75
+- type: narration
+  text: |-
+    继续按钮只剩下边框。
+    你已经点完它能返回的最后一页。
+- type: background_effect
+  effect: Blackout+BloodUI
+- type: music
+  musicPath: none
+  playbackSpeed: 1.0
+- type: ambient
+  stop: true
+- type: voice_shift
+  rate: 1.0
+  pitch: 0
+- type: set_variable
+  options:
+  - actions:
+    - type: set_var
+      content: current_act = 5
+    - type: set_var
+      content: act4_done = true
+- type: main_menu_effect
+  theme: blood
+  message: SCRIPT_CORRUPTED // entry point unavailable
+- type: wait
+  seconds: 1.2
+- type: chapter_end
+  end_type: linear
+  next_chapter: end

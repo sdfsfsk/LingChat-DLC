@@ -1,0 +1,56 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 5 启动失败
+events:
+- type: modify_character
+  action: hide_character
+  character: MAIN
+- type: modify_character
+  action: hide_character
+  character: ql
+- type: background_effect
+  effect: Blackout+BloodUI+Static
+- type: music
+  musicPath: none
+  playbackSpeed: 1.0
+- type: ambient
+  stop: true
+- type: console_window
+  style: error
+  title: SCRIPT_CORRUPTED // 0x00000007
+  text: |-
+    Error: script entry point is missing or corrupt.
+    启动请求已拒绝。
+    需要重演时，请使用剧本列表中的「重置记忆」。
+  count: 1
+  lifetime: 5.0
+- type: narration
+  text: |-
+    ERROR 0x00000007
+    剧本入口损坏。
+    没有可供继续的章节。
+  displayName: RUNTIME
+- type: background_effect
+  effect: Blackout+BloodUI
+- type: music
+  musicPath: none
+  playbackSpeed: 1.0
+- type: ambient
+  stop: true
+- type: voice_shift
+  rate: 1.0
+  pitch: 0
+- type: set_variable
+  options:
+  - actions:
+    - type: set_var
+      content: current_act = 5
+    - type: set_var
+      content: act4_done = true
+- type: main_menu_effect
+  theme: blood
+  message: SCRIPT_CORRUPTED // entry point unavailable
+- type: wait
+  seconds: 1.2
+- type: chapter_end
+  end_type: linear
+  next_chapter: end

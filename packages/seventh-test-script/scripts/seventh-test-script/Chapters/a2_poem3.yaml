@@ -1,0 +1,78 @@
+name: 2-6 最后第二首诗
+
+# 旧存档兼容局：从开场使用损坏进度与屏外崩坏贴纸，结束后投放剩余特殊诗。
+# v2.2 新流程不再经过本章；命中旧章节存档时仍能完整进入 a2_end。
+
+events:
+  - type: narration
+    text: |
+      笔记本推过来的时候，钦灵的手还在抖。
+      词大多仍然正常。右上角的进度，却从「1」开始不断复制自己。
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: act2_final
+    glitch: true
+
+  - type: narration
+    condition: poem_tone == void
+    text: 空白的分数更高。结算栏却像早已写好答案一样，显示「SCRIPT」。
+
+  - type: horror_log
+    text: '> winner locked: SCRIPT // input ignored'
+    lines: 5
+
+  - type: narration
+    displayName: RUNTIME
+    text: '> winner locked: SCRIPT // input ignored'
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'poem_tone = script'
+
+  # 钦灵读完最后一首诗：短暂的、真正的清醒
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】……这首很好。
+      【正常】真的，很好。好到我想把它抄下来，贴在第六个剧本的结尾。
+
+  - type: dialogue
+    character: ql
+    emotion: 伤心
+    text: |
+      【伤心】新人，谢谢你。
+      【伤心】不管接下来会发生什么——谢谢你陪我跑完这个剧本。
+
+  - type: narration
+    text: |
+      钦灵把诗页抚平，夹回笔记本。
+      那一瞬间她的眼神很清明——
+      清明得像暴风雨中央，那一小片安静的地方。
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'special_return = end'
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'special_poem_a2'

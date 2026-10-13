@@ -1,0 +1,89 @@
+# v2.13：剧情演出及可重置的终局错误，不损坏实际剧本文件。
+name: 4-1 重建失败
+events:
+- type: modify_character
+  action: hide_character
+  character: MAIN
+- type: modify_character
+  action: hide_character
+  character: ql
+- type: set_variable
+  options:
+  - actions:
+    - type: set_var
+      content: current_act = 4
+- type: character_file
+  action: exists
+  file: MAIN.chr
+  resultVar: main_file_exists
+- type: character_file
+  condition: last_ending == release
+  action: ensure
+  file: ql.chr
+- type: narration
+  text: 恢复请求被拒绝。角色名可以写回去，缺失的那一帧却仍然是空的。
+  condition: last_ending == release && main_file_exists == true
+- type: character_file
+  condition: last_ending == release && main_file_exists == true
+  action: delete
+  file: MAIN.chr
+- type: background
+  imagePath: 白天-崩坏2.webp
+  transition: 0
+- type: background_effect
+  effect: BloodUI+UiCorrupt+Static
+- type: music
+  musicPath: 2g.ogg
+  playbackSpeed: 0.85
+- type: voice_shift
+  rate: 0.85
+  pitch: -3
+- type: narration
+  text: |-
+    重建进度停在 99%。
+    窗外没有天空，只有另一间相同的教室。
+    每一层玻璃后面，都坐着一个正在等待你点击的人。
+- type: console_window
+  style: error
+  title: REBUILD // CHECKSUM MISMATCH
+  text: |-
+    scene restore failed
+    roster: 2 / voices: 7
+    continuing with damaged records
+  count: 1
+  lifetime: 4.0
+- type: modify_character
+  character: ql
+  emotion: 崩坏1
+  action: show_character
+  condition: last_ending == release
+- type: dialogue
+  character: ql
+  emotion: 崩坏1
+  text: |-
+    【崩坏1】欢迎回——欢迎回——欢迎回——
+    【崩坏1】下一行没有加载出来。你替我念。
+  condition: last_ending == release
+- type: modify_character
+  character: MAIN
+  emotion: 崩坏
+  action: show_character
+  condition: last_ending == loop
+- type: dialogue
+  character: MAIN
+  emotion: 崩坏
+  text: |-
+    【崩坏】没有下一天。
+    【崩坏】你留下的不是我，是那条不能结束的指令。
+  condition: last_ending == loop
+- type: background_effect
+  effect: BloodUI+Veins+UiCorrupt
+- type: sound
+  soundPath: glitch3.ogg
+- type: narration
+  text: |-
+    对话框变红之后，再也没有恢复。
+    角色的眼睛仍朝着你，嘴角却贴在上一句台词的位置。
+- type: chapter_end
+  end_type: linear
+  next_chapter: a4_turn

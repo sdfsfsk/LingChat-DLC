@@ -1,0 +1,49 @@
+# 《第七个测试剧本》v2.13.0 — 原创 meta 恐怖剧本（DLC 发行版，纯惊吓路线，无自杀/自残描写）
+# 四幕结构（映射 DDLC 玩法骨架，内容全原创）：
+#   current_act==1  Act1 快速裂缝：a1_day1 → 两次 20 页写诗 → a1_weekend → a1_end
+#   current_act==2  Act2 崩坏幕：a2_boot → 两次 20 页写诗/特殊诗 → a2_end（三阶段删除）
+#   current_act==3  Act3 独占空间：a3_space → a3_talk → 删除/留下
+#   current_act==4  Act4 结局幕：a4_main → a4_turn → a4_final（先按 release/loop 拆章）
+#   act4_done==true 终局锁定：启动前报错；a5_lingering 为旧版兼容错误页
+# current_act 只在幕末推进；playthrough 仅记录打开次数，退出重开不会直接跳幕。
+# 进入前触发恐怖内容警告；剧本编辑器不可编辑（editor_locked 自锁，引擎零硬编码）
+# main_character：进入即自动把主角切换为 DeepSeek 并锁定角色切换（剧本期间不可
+# 切角色/读档），退出剧本自动恢复进前角色；引擎按目录名在角色库查找。
+main_character: DeepSeek
+script_name: 第七个测试剧本
+intro_chapter: a1_boot
+description: 欢迎来到文学测试部。※ 多周目 meta 恐怖，含强烈突发惊吓与画面崩坏演出，无自杀/自残描写，建议 16 岁以上、心理承受力较强者游玩
+recommand_start: 深夜一个人的时候
+content_warning: horror
+editor_locked: true
+
+script_settings:
+  user_name: ""
+  # 显式授权的安全边界特效：只允许引擎内置预设窗口；.chr 只可操作下列两个剧本标记。
+  allow_system_effects: true
+  character_files:
+    - MAIN.chr
+    - ql.chr
+  # 跨幕记忆（写入 data/script_runtime_state.json）：
+  # playthrough=打开次数；current_act=剧情幕；act4_done=终局启动错误；last_ending=release/loop；
+  # marker_schema_version=.chr 布局迁移版本；marker_checkpoint=可重放的幕末文件/状态事务；
+  # seen_poem_1~2=现行两张特殊诗；seen_poem_3 仅供旧存档兼容；poem_winner_act1=Act1 累计倾向。
+  # 结局后启动前显示错误；重置记忆会清除此布尔变量。
+  entry_error:
+    variable: act4_done
+    message: |
+      ERROR 0x00000007 — SCRIPT_CORRUPTED
+      剧本入口已损坏，无法继续加载。
+      如需重新开始，请在剧本列表中选择「重置记忆」。
+  persistent_vars:
+    - playthrough
+    - current_act
+    - act4_done
+    - act3_visits
+    - last_ending
+    - marker_schema_version
+    - marker_checkpoint
+    - seen_poem_1
+    - seen_poem_2
+    - seen_poem_3
+    - poem_winner_act1

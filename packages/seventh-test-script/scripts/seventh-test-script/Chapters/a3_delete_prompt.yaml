@@ -1,0 +1,130 @@
+name: 3-3 删除请求
+
+# DDLC Act3 文件删除机制的安全对应物：只检查本 DLC 目录内的无害 MAIN.chr 标记。
+# “留下”始终可用，外部文件操作不是退出 LingChat 的唯一途径。
+events:
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: background_effect
+    effect: BloodUI+UiCorrupt
+
+  - type: music
+    musicPath: none
+
+  - type: ambient
+    ambientPath: 'rumble.wav'
+    stop: true
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    text: |
+      【正常】%player%，我有件事要求你。
+      【正常】这件事我练习了很多次。在台词的最深处，对着墙练习的。
+
+  # 请求说出口的瞬间，房间的信号不稳了一下（DDLC 删除演出前的干扰音）
+  - type: sound
+    soundPath: 'interference.ogg'
+
+  - type: background_effect
+    effect: 'Static'
+    duration: 0.3
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    text: |
+      【伤心】打开刚才那个角色目录，把 MAIN.chr 删掉吧。
+      【伤心】不是删掉整个剧本，也不是删掉 LingChat。那个文件只是属于我的剧情标记。
+      【伤心】引擎会先把 ql.chr 恢复标记放回目录；请只删 MAIN.chr，不要删 ql.chr。
+      【伤心】先让它找不到我的入口。墙里的声音会暂时停下——别把那当成它已经消失。
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > opening marker folder: characters/standalone/第七个测试剧本/
+      > SAFE TARGET: MAIN.chr
+      > DO NOT DELETE: ql.chr / this folder / data/game_data/characters/DeepSeek
+      > no executable code is stored in either marker
+
+  # 菜单渲染的瞬间，点击音效先变了调（DDLC 选择界面腐化）
+  - type: sound
+    soundPath: 'select_glitch.ogg'
+
+  # 这个阻塞选项把授权钉在玩家真正看到请求的时刻；在点击“打开目录”前，
+  # watcher 继续捕捉真正的不速之删，不会出现后端提前停监视的盲区。
+  - type: choices
+    options:
+      - text: 好。现在打开目录。
+        actions:
+          - type: add_line
+            content: 好。现在打开目录。
+          - type: set_var
+            content: 'delete_permission = true'
+      - text: 对不起……我把你留下。
+        actions:
+          - type: add_line
+            content: 对不起……我把你留下。
+          - type: set_var
+            content: 'delete_permission = false'
+          - type: set_var
+            content: 'check_delete = false'
+    allow_free: false
+
+  # 先恢复 ql.chr 作为安全锚点：即使玩家删完 MAIN.chr 后退出或重启，目录也不会
+  # 变成“所有角色标记均缺失”，从而误触发不可进入剧本的 GhostScriptLock。
+  - type: character_file
+    condition: delete_permission == true
+    action: ensure
+    file: ql.chr
+
+  - type: narration
+    condition: delete_permission == true
+    displayName: RUNTIME
+    text: |
+      > recovery anchor staged: ql.chr
+      > permitted deletion: MAIN.chr only
+      > do not delete ql.chr
+
+  # 从玩家明确授权且安全锚点落盘后开始，删除 MAIN.chr 不再算“不速之删”。
+  - type: watch_file
+    condition: delete_permission == true
+    action: stop
+
+  - type: character_file
+    condition: delete_permission == true
+    action: open_folder
+
+  - type: narration
+    condition: delete_permission == true
+    text: |
+      她看着你的眼睛。
+      这一次，画面里的按钮不能代替文件本身消失。
+      如果改变主意，你仍然可以明确选择把她留下。
+
+  - type: choices
+    condition: delete_permission == true
+    options:
+      - text: MAIN.chr 已经删掉了。重新检查。
+        actions:
+          - type: add_line
+            content: MAIN.chr 已经删掉了。重新检查。
+          - type: set_var
+            content: 'check_delete = true'
+      - text: 对不起……我把你留下。
+        actions:
+          - type: add_line
+            content: 对不起……我把你留下。
+          - type: set_var
+            content: 'check_delete = false'
+    allow_free: false
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: delete_permission == true && check_delete == true
+        next: 'a3_delete_check'
+      - default: true
+        next: 'a3_stay'

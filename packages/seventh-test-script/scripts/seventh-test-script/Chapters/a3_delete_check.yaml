@@ -1,0 +1,15 @@
+name: 3-3A 文件复查
+
+events:
+  - type: character_file
+    action: exists
+    file: MAIN.chr
+    resultVar: main_file_exists
+
+  - type: chapter_end
+    end_type: branching
+    options:
+      - condition: main_file_exists == false
+        next: 'a3_delete'
+      - default: true
+        next: 'a3_delete_failed'

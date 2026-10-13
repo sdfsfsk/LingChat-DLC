@@ -1,0 +1,124 @@
+name: 1-6 第三首诗
+
+# Act1 最后一首诗：新流程共两局，旧存档若落在第二局仍可继续三局结算。
+# 钦灵今天不在，读诗只有“她”的部分。
+
+events:
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 正常
+
+  - type: narration
+    text: |
+      笔记本最后一次推到你面前。
+      今天的教室很安静——钦灵请假了，只有她坐在对面看着你。
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.35
+
+  - type: poem_game
+    backgroundPath: '深夜诗笺-半页.png'
+    musicPath: '4.ogg'
+    glitchMusicPath: '4g.ogg'
+    warmStickerPath: '写诗Q版-她.png'
+    scriptStickerPath: '写诗Q版-钦灵.png'
+    voidStickerPath: '写诗Q版-空白.png'
+    wordListPath: 'poem_words.yaml'
+    resultVar: 'poem_tone'
+    rounds: 20
+    mode: normal
+    glitch: false
+
+  - type: set_variable
+    options:
+      - condition: poem_tone == warm
+        actions:
+          - type: set_var
+            content: 'warm_score += 1'
+      - condition: poem_tone == script
+        actions:
+          - type: set_var
+            content: 'script_score += 1'
+      - condition: poem_tone == void
+        actions:
+          - type: set_var
+            content: 'void_score += 1'
+
+  # 周目倾向结算：两局同轴即胜出，分票则 balanced；保留 3 分兼容旧存档。
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'poem_winner_act1 = balanced'
+      - condition: warm_score == 2
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = her'
+      - condition: warm_score == 3
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = her'
+      - condition: script_score == 2
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = script'
+      - condition: script_score == 3
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = script'
+      - condition: void_score == 2
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = void'
+      - condition: void_score == 3
+        actions:
+          - type: set_var
+            content: 'poem_winner_act1 = void'
+
+  - type: dialogue
+    character: MAIN
+    emotion: 心动
+    condition: poem_tone == warm
+    text: |
+      【心动】两首了。你的每一首，我都有好好收着哦。
+      【心动】……明天，一定要来。约好了。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    condition: poem_tone == script
+    text: |
+      【正常】你的诗，越来越像"正确答案"了。
+      【正常】我不知道该高兴，还是该害怕。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 伤心
+    condition: poem_tone == void
+    text: |
+      【伤心】今天的诗像一口井。
+      【伤心】我往下看了一眼，里面黑黑的，好像有什么在看我。
+
+  - type: narration
+    text: |
+      她把两页诗都收进笔记本，抱在胸口。
+      窗外的天已经完全黑了。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 害羞
+    text: |
+      【害羞】那个……明天是周末演出日。
+      【害羞】我有话想对你说。在……只有我们两个人的时候。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_weekend'

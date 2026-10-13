@@ -6,6 +6,13 @@ const entries = (await readdir(join(root, 'packages'), { withFileTypes: true }))
 for (const { name: id } of entries) {
   const source = join(root, 'packages', id), output = join(root, 'dist', id);
   try { await access(join(source, 'manifest.toml')); } catch { continue; }
+  const isStory = await access(join(source, 'scripts')).then(() => true, () => false);
+  if (isStory) {
+    await mkdir(output, { recursive: true });
+    for (const name of ['manifest.toml', 'scripts', 'LICENSE', 'README.md', 'docs', 'DESIGN-v2.md'])
+      await cp(join(source, name), join(output, name), { recursive: true });
+    continue;
+  }
   await build({ configFile: false, root: source, base: './',
     resolve: { alias: { '@': join(source, 'src'), '@dlc/sdk': join(root, 'sdk/index.js') } },
     build: { outDir: join(output, 'web'), emptyOutDir: true, target: 'es2022' }, worker: { format: 'es' } });

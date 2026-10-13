@@ -1,0 +1,136 @@
+name: 1-1 文学测试部
+
+# v2.2 紧凑开场：保留两名原创角色与写诗规则，但在数次点击内暴露第一道裂缝。
+events:
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'current_act = 1'
+
+  - type: background
+    imagePath: '白天.webp'
+    transition: 0.45
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 0.96
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: narration
+    text: |
+      下午，你推开文学测试部的门。
+      黑板上只有一行新粉笔字：「第七次测试，人数：2」。
+
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 高兴
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    text: |
+      【高兴】%player%，你终于来了！我是七号部员——叫我“她”就好。
+      【高兴】今天很简单：认识钦灵前辈，然后写一首二十个词的诗。
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 兴奋
+
+  - type: dialogue
+    character: ql
+    emotion: 调皮
+    text: |
+      【调皮】新人好呀，我是钦灵。左页两个小标记里，右边那个就是我～
+      【调皮】选中谁喜欢的词，谁就会自己跳一下。别让“空着的位置”赢哦。
+
+  - type: narration
+    text: |-
+      黑板下浮出三个选项。
+      你的指针先是停顿，随后像被一根看不见的线拖进选项框。
+  - type: background_effect
+    effect: BloodUI+UiCorrupt
+  - type: force_choice
+    forced: 开始第七次测试
+    options:
+    - text: 先核对人数
+      actions:
+      - type: add_line
+        content: 先核对人数
+    - text: 让钦灵先开始
+      actions:
+      - type: add_line
+        content: 让钦灵先开始
+    - text: 开始第七次测试
+      actions:
+      - type: add_line
+        content: 开始第七次测试
+  - type: narration
+    text: |-
+      「开始」还没有被按下，名单上却已经出现了你的名字。
+      旁边的小字是：本次输入已提前接收。
+  - type: background_effect
+    effect: none
+
+  # 第一次异常不再依赖低概率：玩家会在开场一分钟内看见恐怖信号。
+  # v2.6 恐怖拉满：连 OS 窗口标题一起乱码 + 日志双倍刷屏
+
+  - type: sound
+    soundPath: 'glitch2.ogg'
+
+  - type: modify_character
+    character: MAIN
+    emotion: 崩坏
+    flash: true
+    duration: 0.3
+
+  - type: background_effect
+    effect: 'Static+UiCorrupt'
+    duration: 0.4
+
+  - type: horror_log
+    text: 'ROSTER_MISMATCH // expected 2 // loaded 3 // slot[0] has no name'
+    lines: 6
+
+  - type: horror_log
+    text: 'slot[0] is reading your input // slot[0] is reading your input'
+    lines: 14
+
+  - type: console_window
+    style: blood_cmd
+    title: 'RUNT⃞IM⃟E // roster'
+    text: |
+      > characters: 2
+      > observers: 3
+      > unnamed process is already speaking
+    count: 1
+    lifetime: 3.2
+
+
+  - type: dialogue
+    character: MAIN
+    emotion: 正常
+    text: |
+      【正常】……刚才那一下，你也看见了吗？
+      【正常】别回答。它会把回答也记进台词表。
+
+  - type: narration
+    text: |
+      黑板上的“人数：2”被谁擦成了“人数：1”。
+      钦灵没有回头。她只是把笔记本推到你面前。
+
+  - type: dialogue
+    character: ql
+    emotion: 认真
+    text: |
+      【认真】从二十组词里各选一个。别停太久。
+      【认真】这本书……不喜欢等人。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_poem1'

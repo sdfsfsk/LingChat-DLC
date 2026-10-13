@@ -1,9 +1,15 @@
 {
   "name": "lingchat-dlc",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
   "packageManager": "pnpm@11.21.0",
-  "scripts": { "build": "node scripts/build.mjs", "dev:twilight": "vite packages/twilight --config vite.config.mjs", "dev:star-trail": "vite packages/star-trail --config vite.config.mjs" },
-  "devDependencies": { "vite": "6.4.2" }
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev:twilight": "vite packages/twilight --config vite.config.mjs",
+    "dev:star-trail": "vite packages/star-trail --config vite.config.mjs"
+  },
+  "devDependencies": {
+    "vite": "6.4.2"
+  }
 }

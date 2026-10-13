@@ -1,0 +1,220 @@
+name: 1-3 彩排
+
+# Act1 第二天：钦灵带她排练演出，两人对"该怎么演"起了小摩擦（DDLC ch1_end 选边的对应物）。
+# 异样开始渗进来：钦灵说出一句不属于自己的话。
+
+events:
+  - type: background
+    imagePath: '白天.webp'
+    transition: 1.0
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 1.0
+
+  - type: music
+    musicPath: '2.ogg'
+    playbackSpeed: 0.92
+    condition: bgm_detune == true
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 认真
+
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 正常
+
+  - type: narration
+    text: |
+      第二天的文学测试部，比昨天热闹。
+      钦灵搬来两张椅子拼成"舞台"，正拉着她排练。
+
+  - type: dialogue
+    character: ql
+    emotion: 认真
+    text: |
+      【认真】听好啦新人，还有七号——演出最重要的是什么？是感染力！
+      【认真】台词只是骨架，怎么把情绪递到玩家心里，才是我们的本事。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 无奈
+    text: |
+      【无奈】可是前辈，剧本上写的台词，我们不该照着念吗？
+      【无奈】"按本子来"才是测试角色的工作吧。
+
+  - type: dialogue
+    character: ql
+    emotion: 调皮
+    text: |
+      【调皮】死板！本子是人写的，戏是人演的——
+      【调皮】我在第六个剧本里，可是连制作名单都被夸"演得活"哦！
+
+  - type: dialogue
+    character: MAIN
+    emotion: 生气
+    text: |
+      【生气】那也不能自由发挥呀！万一跑错了流程，整个剧本都要重写——
+      【生气】前辈你根本不在乎流程！
+
+  - type: dialogue
+    character: ql
+    emotion: 生气
+    text: |
+      【生气】你才是，整天"流程流程"的，像个没有感情的提词器！
+      【生气】新人！你说，我们谁说得对？
+
+  # v2.12：极稀有微冻结（a1_boot 播种 1/16）——争吵到一半，世界毫无预兆地卡住一拍。
+  # 没有任何解释，也没有角色注意到；只有玩家会怀疑刚才是不是眨眼了。
+  - type: background_effect
+    condition: rare_stillness == true
+    effect: 'Blackout'
+    duration: 0.25
+
+  - type: sound
+    condition: rare_stillness == true
+    soundPath: 'glitch3.ogg'
+
+  - type: wait
+    condition: rare_stillness == true
+    seconds: 1.2
+
+  - type: choices
+    options:
+      - text: 钦灵说得对，演出要有感情。
+        actions:
+          - type: add_line
+            content: 钦灵说得对，演出要有感情。
+          - type: set_var
+            content: 'd2_choice = ql'
+      - text: 她说得对，流程不能乱。
+        actions:
+          - type: add_line
+            content: 她说得对，流程不能乱。
+          - type: set_var
+            content: 'd2_choice = her'
+      - text: 别吵了，都很重要。
+        actions:
+          - type: add_line
+            content: 别吵了，都很重要。
+          - type: set_var
+            content: 'd2_choice = both'
+    allow_free: false
+
+  - type: dialogue
+    character: ql
+    emotion: 高兴
+    condition: d2_choice == ql
+    text: |
+      【高兴】哈哈！新人站在我这边！
+      【高兴】七号你听听，群众的眼睛是雪亮的～
+
+  - type: dialogue
+    character: MAIN
+    emotion: 高兴
+    condition: d2_choice == her
+    text: |
+      【高兴】……谢谢%player%。
+      【高兴】我不是固执，我只是……怕这个剧本坏掉。它是第七个了，不能再出错了。
+
+  - type: dialogue
+    character: MAIN
+    emotion: 害羞
+    condition: d2_choice == both
+    text: |
+      【害羞】%player%真是的，这种时候当老好人……
+      【害羞】不过，谢谢你。我和前辈其实……都知道对方说得对。
+
+  # 和解（DDLC 式：吵完很快和好，但裂痕留下了）
+  - type: narration
+    text: |
+      小小的争执很快就散了。
+      钦灵摆摆手说"不气不气"，她也低下头说"是我太较真了"。
+      教室重新安静下来。
+
+  # ===== 异样渗入：钦灵说出一句不属于自己的话 =====
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】对了新人，明天我们继续——
+
+  # 钦灵的台词中断：一瞬间的故障（Static 闪 + 立绘微崩 + 声线被压沉 + 窗口标题乱码 + 日志刷屏）
+
+  - type: background_effect
+    effect: 'Static'
+    duration: 0.2
+
+  - type: modify_character
+    character: ql
+    emotion: 崩坏1
+    flash: true
+    duration: 0.15
+
+  - type: voice_shift
+    rate: 0.85
+    pitch: -3
+
+  - type: dialogue
+    character: ql
+    emotion: 正常
+    text: |
+      【正常】反正演完了，都会被收回去的啦。
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: horror_log
+    text: 'UNAUTHORIZED SPEAKER OVERRIDE // line not found in script // delivered anyway'
+    lines: 12
+
+  - type: console_window
+    style: error
+    title: 'SpeakerOverride'
+    text: |
+      line_id: <not in script>
+      speaker: ql
+      status: DELIVERED ANYWAY
+    count: 1
+    lifetime: 3.0
+
+
+  - type: narration
+    text: |
+      钦灵自己愣住了。
+      那句话不像她说的。语气平得吓人。
+
+  - type: dialogue
+    character: ql
+    emotion: 慌张
+    text: |
+      【慌张】……诶？我刚才说什么了？
+      【慌张】不是，我刚才明明想说的是"明天继续排练"……
+
+  - type: dialogue
+    character: MAIN
+    emotion: 担心
+    text: |
+      【担心】前辈？
+      【担心】你今天的脸色不太好……要不要先回去休息？
+
+  - type: dialogue
+    character: ql
+    emotion: 害羞
+    text: |
+      【害羞】没事没事！可能是昨晚没睡好。
+      【害羞】狼娘也是要睡美容觉的嘛！啊哈哈……
+
+  - type: narration
+    text: |
+      她笑着把话题岔开了。
+      但你注意到，她说"收回去"的时候——
+      她的视线，落在了教室最后一排那张空着的桌子上。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a1_poem2'

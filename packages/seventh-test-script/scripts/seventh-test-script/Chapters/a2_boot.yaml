@@ -1,0 +1,131 @@
+name: 2-0 再次启动
+
+# Act2 开场：DDLC ch10 的对应物——崩坏启动。
+# 游戏"重新启动"，但 logo 是碎的，名单里没有她。
+
+events:
+  # 重启镜头先清台，避免上一幕或自由对话角色透过启动黑场。
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: modify_character
+    action: hide_character
+    character: ql
+
+  - type: set_variable
+    options:
+      - actions:
+          - type: set_var
+            content: 'current_act = 2'
+
+  # v2.12：Act2 专用惊吓播种——白屏闪吓（约 1/3，DDLC Act2 的标志性概率）
+  - type: random_var
+    variable: a2_noface_scare
+    chance: 0.34
+
+  # 黑场死寂开场（v2.6：整个崩坏启动期间窗口标题保持乱码）
+  - type: background_effect
+    effect: 'Blackout'
+
+
+  - type: music
+    musicPath: none
+
+  - type: wait
+    seconds: 0.45
+
+  # v2.8：碎 logo 两连闪跳脸演出已移除（效果不佳），保留启动故障音与 Tear 转场
+  - type: sound
+    soundPath: 'glitch1.ogg'
+
+  - type: background_effect
+    effect: 'Tear'
+    duration: 0.3
+
+  - type: sound
+    soundPath: 's_kill_glitch1.ogg'
+
+  # 加载日志全是错的
+  - type: horror_log
+    text: 'BOOT_SEQUENCE_CORRUPTED // 第七次启动'
+    lines: 10
+
+  - type: narration
+    displayName: RUNTIME
+    text: |
+      > BOOT_SEQUENCE_CORRUPTED
+      > character_slot[0]: MISSING
+      > fallback scene loaded with unresolved references
+
+  # 世界重启：白天的教室——但不对
+  - type: background
+    imagePath: '白天.webp'
+    transition: 0.8
+
+  - type: background_effect
+    effect: 'none'
+
+
+  # BGM 是幽灵菜单曲（变调主题曲，DDLC ghostmenu 对应物）
+  - type: music
+    musicPath: 'ghostmenu.ogg'
+
+  - type: voice_shift
+    rate: 1.0
+    pitch: 0
+
+  - type: narration
+    text: |
+      深夜，%player%打开了剧本列表。
+      《第七个测试剧本》还躺在列表末尾。
+
+  - type: narration
+    text: |
+      你点开了它。
+      教室亮起来——和记忆中一模一样的阳光。
+      只是这一次，没有人喊你的名字。
+
+  # 她的乱码残影一闪而过（sayori glitch 对应物：名字和台词都是乱码）
+  - type: modify_character
+    action: show_character
+    character: MAIN
+    emotion: 崩坏
+
+  - type: sound
+    soundPath: 'glitch2.ogg'
+
+  - type: dialogue
+    character: MAIN
+    emotion: 崩坏
+    text: |
+      【崩坏】¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿
+      【崩坏】ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß
+
+  - type: modify_character
+    action: hide_character
+    character: MAIN
+
+  - type: modify_character
+    action: show_character
+    character: ql
+    emotion: 正常
+
+  - type: wait
+    seconds: 0.2
+
+  - type: narration
+    text: |
+      刚才那是什么？
+      讲台上站着一个……轮廓。一闪就没了。
+      它说的话，你一个字都不认识。
+
+  - type: narration
+    text: |
+      教室里只剩下钦灵。
+      她坐在自己的位置上，冲你笑了笑。
+      笑得有点僵。
+
+  - type: chapter_end
+    end_type: linear
+    next_chapter: 'a2_day1'
