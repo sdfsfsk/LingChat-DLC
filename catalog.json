@@ -5,20 +5,20 @@
       "id": "star-trail",
       "name": "星灯远征",
       "description": "七关横版跳跃射击：Boss、装备商店、机关与程序合成音乐，支持键盘和触控。",
-      "version": "1.0.1",
-      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.0.1/star-trail-1.0.1.zip",
-      "sha256": "8e093fc4ee7822d2587a71416bdc09c412af1aae163008ca0c840540ebba3e39",
-      "size": 57959,
+      "version": "1.0.2",
+      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.1.0/star-trail-1.0.2.zip",
+      "sha256": "5da237213b7d2330744a3c50a2f49a567adc4f782c6381d9b6f7dff3b50493cd",
+      "size": 58077,
       "api_version": 1
     },
     {
       "id": "twilight-rhythm",
       "name": "暮色节拍",
       "description": "四键像素音游：原创合成曲、MIDI 导入、移动端触控与独立存档。",
-      "version": "1.0.1",
-      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.0.1/twilight-rhythm-1.0.1.zip",
-      "sha256": "63a1386cd49ca3730de9e2c4880ef01c180fc6916057bbed3e439221650c4dcf",
-      "size": 3615433,
+      "version": "1.0.2",
+      "url": "https://github.com/sdfsfsk/LingChat-DLC/releases/download/v1.1.0/twilight-rhythm-1.0.2.zip",
+      "sha256": "4b6ff4cf620b8fdc7f7d0ef74c5a88b6f282df59afd3a8f74e208af3b5001533",
+      "size": 3615554,
       "api_version": 1
     }
   ]
