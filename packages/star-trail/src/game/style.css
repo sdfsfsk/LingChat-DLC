@@ -3,6 +3,7 @@
   --edge-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
   --edge-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --edge-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+  --title-footer-bottom: clamp(24px, 7%, 64px);
   display: block;
   width: 100%;
   height: 100%;
@@ -75,12 +76,13 @@ input:focus-visible {
 }
 .scene-menu {
   position: absolute;
-  top: 45%;
+  top: 44%;
+  transform: translateY(-50%);
   left: 6.5%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(12px, 3vh, 27px);
+  gap: clamp(10px, 2.2vh, 23px);
 }
 .menu-item {
   font-size: clamp(25px, 3.8vw, 58px);
@@ -100,12 +102,14 @@ input:focus-visible {
 .title-hint {
   position: absolute;
   left: 7%;
-  bottom: 4%;
+  bottom: var(--title-footer-bottom);
+  max-width: 86%;
   margin: 0;
   font:
     clamp(10px, 1vw, 14px) "Microsoft YaHei",
     sans-serif;
   text-shadow: 0 2px 3px #17374e;
+  line-height: 1.7;
 }
 .hud {
   position: absolute;
@@ -391,7 +395,7 @@ input:focus-visible {
     font-size: 38px;
   }
   .scene-menu {
-    top: 38%;
+    top: 44%;
     gap: 6px;
   }
   .menu-item {
@@ -436,7 +440,8 @@ input:focus-visible {
     font-size: 10px;
   }
   .scene-menu {
-    top: 37%;
+    top: 34%;
+    transform: none;
   }
   .boss-hud {
     top: calc(var(--edge-top) + 150px);
@@ -444,7 +449,6 @@ input:focus-visible {
     width: 60%;
   }
   .title-hint {
-    bottom: 6%;
     font-size: 10px;
   }
   .announcement {
@@ -852,7 +856,8 @@ input:focus-visible {
   top: 8%;
 }
 .star-trail[data-layout="portrait"] .scene-menu {
-  top: 32%;
+  top: 34%;
+  transform: none;
 }
 .star-trail[data-layout="portrait"][data-endurance="true"] .announcement {
   top: calc(var(--edge-top) + 245px);

@@ -1,7 +1,7 @@
 id = "star-trail"
 name = "星灯远征"
 description = "七关横版跳跃射击：Boss、装备商店、机关与程序合成音乐，支持键盘和触控。"
-version = "1.0.2"
+version = "1.0.3"
 author = "sdfsfsk / LingChat contributors"
 
 [[games]]
