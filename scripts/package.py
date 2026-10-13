@@ -7,8 +7,10 @@ tag = os.environ.get('DLC_RELEASE_TAG', 'v' + project['version'])
 prior_path = root / 'catalog.json'
 prior = json.loads(prior_path.read_text(encoding='utf-8')) if prior_path.exists() else {'packages': []}
 entries = []
-for folder in ['twilight', 'star-trail']:
-    source = root / 'dist' / folder
+for package in sorted((root / 'packages').iterdir()):
+    if not package.is_dir() or not (package / 'manifest.toml').is_file():
+        continue
+    source = root / 'dist' / package.name
     manifest = tomllib.loads((source / 'manifest.toml').read_text(encoding='utf-8'))
     filename = f"{manifest['id']}-{manifest['version']}.zip"
     archive = root / 'dist' / filename

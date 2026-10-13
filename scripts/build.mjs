@@ -1,9 +1,11 @@
 import { build } from 'vite';
 import { resolve, join } from 'node:path';
-import { mkdir, readFile, cp, writeFile } from 'node:fs/promises';
+import { mkdir, access, cp, readdir } from 'node:fs/promises';
 const root = resolve(import.meta.dirname, '..');
-for (const id of ['twilight', 'star-trail']) {
+const entries = (await readdir(join(root, 'packages'), { withFileTypes: true })).filter(entry => entry.isDirectory()).sort((a, b) => a.name.localeCompare(b.name));
+for (const { name: id } of entries) {
   const source = join(root, 'packages', id), output = join(root, 'dist', id);
+  try { await access(join(source, 'manifest.toml')); } catch { continue; }
   await build({ configFile: false, root: source, base: './',
     resolve: { alias: { '@': join(source, 'src'), '@dlc/sdk': join(root, 'sdk/index.js') } },
     build: { outDir: join(output, 'web'), emptyOutDir: true, target: 'es2022' }, worker: { format: 'es' } });

@@ -33,6 +33,8 @@ Node.js 22、pnpm 11.21 与 Python 3.11+；Python 只负责确定性 ZIP 和目�
 - `dist/<game>`：可直接装入 `data/plugins/<manifest.id>` 的产物。
 - `dist/*.zip`：可下载分发的压缩包。
 
+新增游戏时，在 `packages/` 下增加一个含 `manifest.toml`、`index.html` 和前端源码的子目录即可；构建与目录生成会自动发现新包。宿主不需要增加游戏名称、路由或资源列表。
+
 浏览器开发模式使用按包隔离的 localStorage；在 LingChat 中使用宿主 HTTP 存档接口。游戏逻辑使用 SDK 的同步缓存式 `storage`，退出会等待存档写入；写入失败显示可重试提示。保存上限为每游戏 8 MiB。
 
 ## 发布
