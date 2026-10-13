@@ -1,4 +1,5 @@
 pub mod catalog;
+pub mod discovery;
 pub mod runtime;
 pub use ling_chat_dlc_contract::*;
 #[cfg(test)]

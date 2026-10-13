@@ -21,4 +21,4 @@ for (const { name: id } of entries) {
   await cp(join(root, 'LICENSE'), join(output, 'LICENSE'));
   await cp(join(root, 'docs'), join(output, 'docs'), { recursive: true });
 }
-console.log('Packages built. Run python scripts/package.py to create verified ZIPs and catalog.json.');
+console.log('Packages built. Run python scripts/package.py to create ZIPs and export their manifests.');

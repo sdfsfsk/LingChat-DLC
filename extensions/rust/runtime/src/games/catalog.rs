@@ -1,4 +1,4 @@
-//! Versioned HTTPS catalog + bounded, verified game-only package installation.
+//! Per-package discovery cache and bounded, verified content installation.
 use std::collections::HashSet;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
@@ -14,10 +14,11 @@ use tokio_util::sync::CancellationToken;
 use super::{valid_id, validate_files, API_VERSION, LIFECYCLE};
 use ling_chat_plugins::{manifest, types::PluginManifest, PluginManager};
 
-const CATALOG_URL: &str =
+const LEGACY_CATALOG_URL: &str =
     "https://raw.githubusercontent.com/sdfsfsk/LingChat-DLC/main/catalog-v2.json";
+use super::discovery::SOURCE;
 const CATALOG_LIMIT: usize = 1024 * 1024;
-const PACKAGE_LIMIT: usize = 128 * 1024 * 1024;
+pub(super) const PACKAGE_LIMIT: usize = 128 * 1024 * 1024;
 const EXTRACT_LIMIT: u64 = 256 * 1024 * 1024;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -55,7 +56,7 @@ pub struct Cache {
 impl Default for Cache {
     fn default() -> Self {
         Self {
-            source: CATALOG_URL.into(),
+            source: SOURCE.into(),
             catalog: Catalog {
                 schema_version: 2,
                 packages: vec![],
@@ -68,7 +69,7 @@ fn cache_path() -> PathBuf {
     ling_chat_main::data_dir::get_data_dir().join("dlc-catalog.json")
 }
 
-fn validate_url(text: &str) -> Result<reqwest::Url> {
+pub(super) fn validate_url(text: &str) -> Result<reqwest::Url> {
     let url = reqwest::Url::parse(text)?;
     if url.scheme() != "https"
         || !url.username().is_empty()
@@ -89,7 +90,7 @@ fn validate_url(text: &str) -> Result<reqwest::Url> {
     Ok(url)
 }
 
-fn validate_catalog(catalog: &Catalog) -> Result<()> {
+pub(super) fn validate_catalog(catalog: &Catalog) -> Result<()> {
     if catalog.schema_version != 2 || catalog.packages.len() > 256 {
         bail!("Unsupported or oversized catalog");
     }
@@ -118,7 +119,7 @@ fn validate_catalog(catalog: &Catalog) -> Result<()> {
     Ok(())
 }
 
-async fn download(
+pub(super) async fn download(
     url: &str,
     limit: usize,
     progress: Option<(&AppHandle, &str)>,
@@ -172,9 +173,13 @@ fn read_cache() -> Result<Cache> {
 }
 
 fn parse_cache(bytes: &[u8]) -> Result<Cache> {
-    let cache: Cache = serde_json::from_slice(bytes)?;
-    // Ignore catalogs saved by older builds with a user-selected source.
-    if cache.source != CATALOG_URL {
+    let mut cache: Cache = serde_json::from_slice(bytes)?;
+    // Preserve the previous trusted list offline during the discovery migration.
+    // No network request to the frozen legacy catalog is made.
+    if cache.source == LEGACY_CATALOG_URL {
+        cache.source = SOURCE.into();
+    }
+    if cache.source != SOURCE {
         return Ok(Cache::default());
     }
     validate_catalog(&cache.catalog)?;
@@ -189,11 +194,9 @@ pub fn game_catalog_cached() -> Result<Cache, String> {
 #[tauri::command]
 pub async fn game_catalog_sync() -> Result<Cache, String> {
     async fn sync() -> Result<Cache> {
-        let bytes = download(CATALOG_URL, CATALOG_LIMIT, None).await?;
-        let catalog: Catalog = serde_json::from_slice(&bytes)?;
-        validate_catalog(&catalog)?;
+        let catalog = super::discovery::discover().await?;
         let cache = Cache {
-            source: CATALOG_URL.into(),
+            source: SOURCE.into(),
             catalog,
         };
         let path = cache_path();
@@ -395,11 +398,12 @@ mod tests {
             },
         };
         let ignored = parse_cache(&serde_json::to_vec(&cache).unwrap()).unwrap();
-        assert_eq!(ignored.source, CATALOG_URL);
+        assert_eq!(ignored.source, SOURCE);
         assert!(ignored.catalog.packages.is_empty());
-        cache.source = CATALOG_URL.into();
+        cache.source = LEGACY_CATALOG_URL.into();
         let retained = parse_cache(&serde_json::to_vec(&cache).unwrap()).unwrap();
         assert_eq!(retained.catalog.packages.len(), 1);
+        assert_eq!(retained.source, SOURCE);
     }
     #[test]
     fn rejects_unsafe_catalog_urls_and_duplicate_ids() {

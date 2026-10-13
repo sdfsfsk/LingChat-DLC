@@ -6,7 +6,9 @@ Specific horror presentations, translations and helper pages stay in this reposi
 
 These readable source packages contain the shared game runtime and native story
 presentation extracted from LingChat PR #884. Game and story content stays under
-`packages/` and continues to use the existing catalogs, manifests and downloads.
+`packages/` and is discovered from each published package's own manifest. Runtime
+0.2.1 adds [package discovery](docs/package-discovery.md); the UI and contract remain
+at 0.2.0. Central catalog files are frozen for legacy clients.
 
 - `frontend/`: Vue components, story presentation, audio, state and typed events.
 - `rust/contract/`: content manifest validation and plugin lifecycle callbacks.
@@ -25,7 +27,7 @@ game webview. Saves remain outside installed packages.
 This SDK is compiled into LingChat; it is not downloaded executable code. The host
 pins Rust packages to a Git revision and the UI tarball to a release URL plus its
 lockfile integrity. Changing this SDK requires rebuilding LingChat. Updating game
-or story content remains an ordinary catalog download and does not require a host
+or story content remains an ordinary DLC download and does not require a host
 rebuild.
 
 `@lingchat/host/*` resolves to the host's `src/` modules. The host's workspace patches

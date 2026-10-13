@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag (bump package manifest versions first)
+        description: Unused release tag (versions come from each package manifest)
         required: true
-        default: v1.1.1
 permissions:
   contents: write
 jobs:
@@ -23,20 +22,12 @@ jobs:
           python-version: '3.12'
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: python scripts/test_package_release.py
       - run: python scripts/package.py
-        env:
-          DLC_REPOSITORY: ${{ github.repository }}
-          DLC_RELEASE_TAG: ${{ inputs.tag }}
-      - name: Publish immutable archives
+      - name: Publish immutable ZIPs and their manifests
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}
+          DLC_REPOSITORY: ${{ github.repository }}
         run: |
-          gh release create "$RELEASE_TAG" dist/*.zip --target "$GITHUB_SHA" --title "LingChat DLC $RELEASE_TAG" --generate-notes
-      - name: Publish catalog after assets are available
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add catalog.json catalog-v2.json
-          git diff --cached --quiet || git commit -m "Update downloadable DLC catalog"
-          git push origin HEAD:main
+          python scripts/publish.py "$RELEASE_TAG"
