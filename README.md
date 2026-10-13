@@ -45,6 +45,10 @@ Node.js 22、pnpm 11.21 与 Python 3.11+；Python 只负责确定性 ZIP 和目�
 
 ## 许可与来源
 
+宿主使用的游戏运行器、原生剧本演出与 Vue 组件源码位于
+[extensions/](extensions/README.md)。它们作为固定版本的编译依赖接入 LingChat，
+继续复用现有插件安装、资源及依赖管理；普通 DLC 内容更新仍通过目录下载。
+
 程序代码沿用 LingChat 的 **AGPL-3.0**（见 LICENSE），未将第三方素材重新授权为 AGPL。钦灵像素图的来源见 [素材记录](docs/minigames-twilight-assets.md)；《U.N.オーエンは彼女なのか？》及钢琴谱数据的作者、来源和独立使用条件见 [配乐来源](docs/minigames-twilight-midi.md)。包内保留上述文件和游戏内署名。
 
 触摸操作保留。浏览器中的手机尺寸测试与 Android/iOS 真机验证是不同验证范围；主窗口内嵌游戏目前面向桌面版；移动端嵌入支持需单独验证。
