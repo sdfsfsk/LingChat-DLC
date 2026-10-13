@@ -1,6 +1,6 @@
 # 小游戏移动端适配
 
-两款小游戏共用主程序的「开始游戏 → 小游戏」入口，在 Android/iOS WebView 中使用 Canvas、Pointer Events 与 Web Audio，不依赖桌面键盘或外部网页。无需锁定屏幕方向。
+两款小游戏共用主程序的「设置 → 插件 / DLC → DLC」入口，下载并启用后在独立游戏窗口启动。游戏使用 Canvas、Pointer Events 与 Web Audio，不依赖桌面键盘，无需锁定屏幕方向；Android/iOS 的原生多窗口运行仍需真机验证。
 
 手机按钮仅在 Android、iPhone、iPad 上显示，包含以桌面模式访问的 iPadOS。Windows/macOS 不显示手机虚拟按键，触摸屏和窗口宽度不会单独触发这些按钮；桌面继续使用键盘。
 

@@ -6,8 +6,8 @@
 
 ## 安装与更新
 
-1. 在支持 DLC 的 LingChat 中打开「游戏模式 → 小游戏 / DLC」。
-2. 目录地址填入 `https://raw.githubusercontent.com/sdfsfsk/LingChat-DLC/main/catalog.json`，点击「同步目录」。
+1. 在支持 DLC 的 LingChat 中打开「设置 → 插件 / DLC → DLC」。
+2. 点击「同步目录」，程序会从内置的本仓库地址获取内容，无需填写链接。
 3. 下载并安装需要的游戏，再点击「启用」「开始」。也可从 [Releases](https://github.com/sdfsfsk/LingChat-DLC/releases) 下载 ZIP，使用「导入本地包」。
 4. 后续点击「同步目录」「更新已安装」。游戏内容单独更新，无需重编译 LingChat。
 
