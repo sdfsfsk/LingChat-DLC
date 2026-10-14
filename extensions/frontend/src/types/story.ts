@@ -80,3 +80,18 @@ export type ExtensionScriptEvent =
   | ScriptVoiceShiftEvent
   | ScriptForceChoiceEvent
   | ScriptPoemGameEvent;
+
+export interface BackgroundPresentation {
+  /** BSOD 假异常窗口的 trace 行文本（剧本自带彩蛋，缺省用通用默认） */
+  text?: string;
+  /** BSOD 彩蛋独白（延迟淡入的小字），缺省不显示 */
+  echo?: string;
+}
+export interface CharacterPresentation {
+  /** true 时为"闪现"演出：情绪立绘短暂展示 duration 秒后自动还原，不写回角色状态 */
+  flash?: boolean;
+  /** 立绘噪点侵蚀预设（DDLC n_rects_ghost 式）：'eyes' / 'mouth' / 'eyes_mouth'；'none' 清除 */
+  noise?: string;
+  /** 噪点淡入秒数；0/未设置 = 立即全显 */
+  noiseFadeIn?: number;
+}

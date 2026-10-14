@@ -98,3 +98,58 @@ pub struct VoiceShiftPayload {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<f64>,
 }
+
+pub mod event_names {
+    pub use ling_chat_main::ai_service::game_system::script_engine::responses::event_names::*;
+    pub const SCRIPT_JUMPSCARE: &str = "script:jumpscare";
+    pub const SCRIPT_FORCE_CHOICE: &str = "script:force-choice";
+    pub const SCRIPT_POEM_GAME: &str = "script:poem-game";
+    pub const SCRIPT_VOICE_SHIFT: &str = "script:voice-shift";
+    pub const SCRIPT_WAIT: &str = "script:wait";
+    pub const SCRIPT_GLITCH_WINDOW: &str = "script:glitch-window";
+    pub const SCRIPT_CONSOLE_WINDOW: &str = "script:console-window";
+    pub const SCRIPT_WINDOW_TITLE: &str = "script:window-title";
+    pub const SCRIPT_WINDOW_TITLE_RESET: &str = "script:window-title-reset";
+}
+
+/// Only authored presentation fields cross the host event boundary. Other keys
+/// (including core identity/action fields) cannot be overwritten by extension data.
+pub fn event_fields(
+    kind: &str,
+    data: &serde_json::Value,
+) -> serde_json::Map<String, serde_json::Value> {
+    use serde_json::{Map, Value};
+    let mut fields = Map::new();
+    match kind {
+        "modify_character" => {
+            let flash = data.get("flash").is_some_and(|v| {
+                v.as_bool().unwrap_or_else(|| {
+                    v.as_str()
+                        .is_some_and(|s| s.trim().eq_ignore_ascii_case("true"))
+                })
+            });
+            if flash {
+                fields.insert("flash".into(), Value::Bool(true));
+            }
+            if let Some(noise) = data.get("noise").and_then(Value::as_str) {
+                fields.insert("noise".into(), Value::String(noise.into()));
+            }
+            if let Some(number) = data
+                .get("noise_fade_in")
+                .and_then(|v| v.as_f64().or_else(|| v.as_str()?.trim().parse().ok()))
+                .and_then(serde_json::Number::from_f64)
+            {
+                fields.insert("noiseFadeIn".into(), Value::Number(number));
+            }
+        }
+        "background_effect" => {
+            for key in ["text", "echo"] {
+                if let Some(text) = data.get(key).and_then(Value::as_str) {
+                    fields.insert(key.into(), Value::String(text.into()));
+                }
+            }
+        }
+        _ => {}
+    }
+    fields
+}

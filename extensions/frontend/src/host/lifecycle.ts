@@ -66,6 +66,7 @@ export function enterExtensionStory(
   state: GameState,
   uiStore: ReturnType<typeof useUIStore>,
 ) {
+  state.poemGame = null;
   // 剧本 BGM 隔离：保存自由对话的 BGM 与循环模式（已在剧本中则保留最早的值），
   // 并阻止剧本期间的 BGM 变化被持久化到 session（防泄漏到下次启动）
   if (uiStore.preScriptBgm === null) {

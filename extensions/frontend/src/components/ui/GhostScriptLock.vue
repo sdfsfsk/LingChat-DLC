@@ -44,7 +44,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { useUIStore } from "@lingchat/host/stores/modules/ui/ui";
-import { checkScriptGhostLock } from "@lingchat/host/api/services/script-info";
+import { checkScriptGhostLock } from "@lingchat/dlc-ui/api/services/story";
 import {
   isOwnedByStandaloneDlc,
   releaseFolderFromEvent,

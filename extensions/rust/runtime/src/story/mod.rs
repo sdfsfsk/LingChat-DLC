@@ -16,7 +16,9 @@ pub fn install() {
         check_config: lifecycle::check_config,
         initialize: |script, ctx| Box::pin(lifecycle::initialize(script, ctx)),
         restore_title: events::window_title_event::restore_window_title,
-        schemas: schema::events,
+        configure_schema: schema::configure,
+        event_fields: responses::event_fields,
+        effect_names: schema::effect_names,
         validate_config: validate::config,
         validate_event: validate::event,
         register_events: || {

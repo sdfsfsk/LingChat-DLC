@@ -63,4 +63,69 @@ mod integration_tests {
             .iter()
             .any(|d| d.code == "console_window.not_authorized"));
     }
+
+    #[test]
+    fn sdk_registers_fields_on_builtin_events_without_replacing_core_fields() {
+        super::install_for_tests();
+        let schema = schema::build_schema();
+        let role = schema
+            .events
+            .iter()
+            .find(|e| e.type_key == "modify_character")
+            .unwrap();
+        for key in ["character", "emotion", "flash", "noise", "noise_fade_in"] {
+            assert_eq!(
+                role.fields.iter().filter(|f| f.key == key).count(),
+                1,
+                "{key}"
+            );
+        }
+        assert!(schema
+            .story_config_fields
+            .iter()
+            .any(|f| f.key == "content_warning"));
+        let background = schema
+            .events
+            .iter()
+            .find(|e| e.type_key == "background_effect")
+            .unwrap();
+        let options = &background
+            .fields
+            .iter()
+            .find(|f| f.key == "effect")
+            .unwrap()
+            .options;
+        assert!(options.iter().any(|v| v == "Rain"));
+        assert!(options.iter().any(|v| v == "Blackout"));
+    }
+
+    #[test]
+    fn extension_payload_keeps_wire_format_and_does_not_copy_core_fields() {
+        super::install_for_tests();
+        let fields = extension::event_fields(
+            "modify_character",
+            &serde_json::json!({
+                "characterId": 999, "action": "hide_character", "flash": " true ",
+                "noise": "eyes", "noise_fade_in": "2.5"
+            }),
+        );
+        let payload = ling_chat_main::ai_service::game_system::script_engine::responses::ModifyCharacterPayload {
+            character_id: 7, emotion: Some("正常".into()), action: None, clothes: None,
+            duration: Some(0.2), extension: fields,
+        };
+        let wire = serde_json::to_value(payload).unwrap();
+        assert_eq!(wire["characterId"], 7);
+        assert_eq!(wire["flash"], true);
+        assert_eq!(wire["noiseFadeIn"], 2.5);
+        assert!(wire.get("action").is_none());
+        assert!(extension::event_fields("unknown", &wire).is_empty());
+        let bg = extension::event_fields(
+            "background_effect",
+            &serde_json::json!({
+                "text": "authored", "echo": "echo", "effect": "override"
+            }),
+        );
+        assert_eq!(bg.len(), 2);
+        assert_eq!(bg["text"], "authored");
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@lingchat/dlc-ui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "AGPL-3.0-only",
   "private": true,
   "type": "module",
@@ -63,7 +63,13 @@
     "./host/gameState": "./src/host/gameState.ts",
     "./host/policy": "./src/host/policy.ts",
     "./host/GameOverlay.vue": "./src/host/GameOverlay.vue",
-    "./host/character": "./src/host/character.ts"
+    "./host/character": "./src/host/character.ts",
+    "./host/ExtensionOverlay.vue": "./src/host/ExtensionOverlay.vue",
+    "./host/StageOverlay.vue": "./src/host/StageOverlay.vue",
+    "./host/ScriptActions.vue": "./src/host/ScriptActions.vue",
+    "./host/queue": "./src/host/queue.ts",
+    "./api/services/story": "./src/api/services/story.ts",
+    "./host/media": "./src/host/media.ts"
   },
   "peerDependencies": {
     "vue": "^3.5.0",

@@ -206,3 +206,66 @@ pub fn events() -> Vec<EventSpec> {
         },
     ]
 }
+
+/// Extend the editor contract without putting content-specific fields in LC.
+pub fn configure(
+    schema: &mut ling_chat_main::ai_service::game_system::script_engine::schema::ScriptSchema,
+) {
+    schema.events.extend(events());
+    schema.story_config_fields.extend(vec![
+        FieldSpec::new("main_character", "剧本主角目录", FieldKind::Text)
+            .hint("正式进入时切换并锁定到全局 characters/ 下的目录名；结束后恢复原主角"),
+        FieldSpec::new("content_warning", "内容警告类型", FieldKind::Select)
+            .options(["horror"])
+            .hint("horror 会在进入前要求玩家确认，并允许受限系统演出授权"),
+        FieldSpec::new("editor_locked", "禁止编辑", FieldKind::Bool)
+            .default_desc("false")
+            .hint("发行版 DLC 可锁定编辑器修改，但仍允许校验和正式游玩"),
+    ]);
+    for event in &mut schema.events {
+        match event.type_key {
+            "modify_character" => event.fields.extend(vec![
+                FieldSpec::new("flash", "立绘故障闪现", FieldKind::Bool)
+                    .default_desc("false")
+                    .hint("硬切闪现指定情绪立绘，供短促惊吓演出"),
+                FieldSpec::new("noise", "立绘噪点区域", FieldKind::Select)
+                    .options(["none", "eyes", "mouth", "eyes_mouth"])
+                    .default_desc("none")
+                    .hint("黑噪点侵蚀眼睛/嘴部；none 清除当前侵蚀"),
+                FieldSpec::new("noise_fade_in", "噪点淡入（秒）", FieldKind::Number)
+                    .placeholder("0")
+                    .hint("仅 noise 非 none 时生效；0 表示立即出现"),
+            ]),
+            "background_effect" => {
+                event.fields.extend(vec![
+                    FieldSpec::new("text", "特效文本", FieldKind::Textarea)
+                        .hint("UiCorrupt 等文字侵蚀特效的显示内容"),
+                    FieldSpec::new("echo", "回声文本", FieldKind::Text)
+                        .hint("可选的故障回声/残影文本"),
+                ]);
+                if let Some(field) = event.fields.iter_mut().find(|f| f.key == "effect") {
+                    field
+                        .options
+                        .extend(effect_names().into_iter().map(str::to_owned));
+                }
+            }
+            _ => {}
+        }
+    }
+}
+pub fn effect_names() -> Vec<&'static str> {
+    vec![
+        "Glitch",
+        "Shake",
+        "Flash",
+        "Blackout",
+        "Tear",
+        "Static",
+        "Invert",
+        "BloodDrip",
+        "Veins",
+        "BSOD",
+        "UiCorrupt",
+        "BloodUI",
+    ]
+}

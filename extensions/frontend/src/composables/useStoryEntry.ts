@@ -3,9 +3,11 @@ import { useRouter } from "vue-router";
 import {
   type ScriptSummary,
   startScript,
+} from "@lingchat/host/api/services/script-info";
+import {
   resetScriptState,
   checkScriptGhostLock,
-} from "@lingchat/host/api/services/script-info";
+} from "@lingchat/dlc-ui/api/services/story";
 import { useGameStore } from "@lingchat/host/stores/modules/game";
 import { useDialogStore } from "@lingchat/host/stores/modules/ui/dialog";
 import { useUIStore } from "@lingchat/host/stores/modules/ui/ui";
